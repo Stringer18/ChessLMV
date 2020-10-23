@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Файлы исходного кода">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Figures">
+      <UniqueIdentifier>{ca6712ee-fb53-487b-a53c-1d6b6468df39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Figures\Black">
+      <UniqueIdentifier>{ea7657df-3de8-4a92-b65a-3d0481682346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\Figures\White">
+      <UniqueIdentifier>{c6905cfb-d4ea-4f3a-a5e8-2ca8c44702e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Figures">
+      <UniqueIdentifier>{0eaa732e-174c-4bc5-844d-202e10f54da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Figures\Black">
+      <UniqueIdentifier>{237f0e7b-20f5-4d6f-bea7-406fa0f2e040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Figures\White">
+      <UniqueIdentifier>{cd0437bc-aadf-447e-9c1d-26abd4bd902f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Resources">
+      <UniqueIdentifier>{04e9a21e-6b43-4451-bb0b-9cb6b882d147}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Resources\png">
+      <UniqueIdentifier>{6985c681-f7fa-4a50-b43d-d82a234d83e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChessLMV.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="HelpFunctions.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="IntPoint.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Background.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectInsertion.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="ChessBoard.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="CellBoard.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackBishop.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackRook.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackKing.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackKnight.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackPawn.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackQueen.cpp">
+      <Filter>Файлы исходного кода\Figures\Black</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteBishop.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteKing.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteKnight.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+    <ClCompile Include="WhitePawn.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteQueen.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteRook.cpp">
+      <Filter>Файлы исходного кода\Figures\White</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChessLMV.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="HelpFunctions.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="IntPoint.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectInsertion.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessBoard.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="CellBoard.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackBishop.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackQueen.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackKing.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackKnight.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackPawn.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackRook.h">
+      <Filter>Заголовочные файлы\Figures\Black</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteBishop.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteKing.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteKnight.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="WhitePawn.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteQueen.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteRook.h">
+      <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LogFile.log">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="Resources\Background.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\ChessBoard.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackBishop.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackKing.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackKnight.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackPawn.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackQueen.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\BlackRook.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhiteBishop.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhiteRook.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhiteKing.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhiteKnight.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhitePawn.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\WhiteQueen.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\ChessLMV.ini">
+      <Filter>Файлы ресурсов\Resources</Filter>
+    </None>
+    <None Include="Resources\OldStandardTTItalic.ttf">
+      <Filter>Файлы ресурсов\Resources</Filter>
+    </None>
+  </ItemGroup>
+</Project>

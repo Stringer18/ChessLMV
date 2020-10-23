@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0270D18B-8C87-424F-811F-8CAB62BB7823}</ProjectGuid>
+    <RootNamespace>ChessLMV</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_image-2.0.5\include;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_ttf-2.0.15\include;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2-2.0.10\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_image-2.0.5\lib\x86;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_ttf-2.0.15\lib\x86;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2-2.0.10\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_ttf.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_image-2.0.5\include;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_ttf-2.0.15\include;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2-2.0.10\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_image-2.0.5\lib\x86;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2_ttf-2.0.15\lib\x86;C:\Users\Litovchenko\Documents\Visual Studio 2010\Projects\ChessLMV\ChessLMV\Libs\SDL2-2.0.10\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_ttf.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Background.cpp" />
+    <ClCompile Include="BlackBishop.cpp" />
+    <ClCompile Include="BlackKing.cpp" />
+    <ClCompile Include="BlackKnight.cpp" />
+    <ClCompile Include="BlackPawn.cpp" />
+    <ClCompile Include="BlackQueen.cpp" />
+    <ClCompile Include="BlackRook.cpp" />
+    <ClCompile Include="CellBoard.cpp" />
+    <ClCompile Include="ChessBoard.cpp" />
+    <ClCompile Include="ChessLMV.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectInsertion.cpp" />
+    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="HelpFunctions.cpp" />
+    <ClCompile Include="IntPoint.cpp" />
+    <ClCompile Include="WhiteBishop.cpp" />
+    <ClCompile Include="WhiteKing.cpp" />
+    <ClCompile Include="WhiteKnight.cpp" />
+    <ClCompile Include="WhitePawn.cpp" />
+    <ClCompile Include="WhiteQueen.cpp" />
+    <ClCompile Include="WhiteRook.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Background.h" />
+    <ClInclude Include="BlackBishop.h" />
+    <ClInclude Include="BlackKing.h" />
+    <ClInclude Include="BlackKnight.h" />
+    <ClInclude Include="BlackPawn.h" />
+    <ClInclude Include="BlackQueen.h" />
+    <ClInclude Include="BlackRook.h" />
+    <ClInclude Include="CellBoard.h" />
+    <ClInclude Include="ChessBoard.h" />
+    <ClInclude Include="ChessLMV.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectInsertion.h" />
+    <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="HelpFunctions.hpp" />
+    <ClInclude Include="IntPoint.h" />
+    <ClInclude Include="WhiteBishop.h" />
+    <ClInclude Include="WhiteKing.h" />
+    <ClInclude Include="WhiteKnight.h" />
+    <ClInclude Include="WhitePawn.h" />
+    <ClInclude Include="WhiteQueen.h" />
+    <ClInclude Include="WhiteRook.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LogFile.log" />
+    <None Include="Resources\Background.png" />
+    <None Include="Resources\BlackBishop.png" />
+    <None Include="Resources\BlackKing.png" />
+    <None Include="Resources\BlackKnight.png" />
+    <None Include="Resources\BlackPawn.png" />
+    <None Include="Resources\BlackQueen.png" />
+    <None Include="Resources\BlackRook.png" />
+    <None Include="Resources\ChessBoard.png" />
+    <None Include="Resources\ChessLMV.ini" />
+    <None Include="Resources\OldStandardTTItalic.ttf" />
+    <None Include="Resources\WhiteBishop.png" />
+    <None Include="Resources\WhiteKing.png" />
+    <None Include="Resources\WhiteKnight.png" />
+    <None Include="Resources\WhitePawn.png" />
+    <None Include="Resources\WhiteQueen.png" />
+    <None Include="Resources\WhiteRook.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
