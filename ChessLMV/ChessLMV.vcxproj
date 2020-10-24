@@ -83,6 +83,7 @@
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="HelpFunctions.cpp" />
     <ClCompile Include="IntPoint.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="WhiteBishop.cpp" />
     <ClCompile Include="WhiteKing.cpp" />
     <ClCompile Include="WhiteKnight.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="HelpFunctions.hpp" />
     <ClInclude Include="IntPoint.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="WhiteBishop.h" />
     <ClInclude Include="WhiteKing.h" />
     <ClInclude Include="WhiteKnight.h" />

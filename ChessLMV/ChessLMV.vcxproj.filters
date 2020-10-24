@@ -102,6 +102,9 @@
     <ClCompile Include="WhiteRook.cpp">
       <Filter>Файлы исходного кода\Figures\White</Filter>
     </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessLMV.h">
@@ -166,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="WhiteRook.h">
       <Filter>Заголовочные файлы\Figures\White</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

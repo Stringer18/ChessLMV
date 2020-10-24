@@ -27,6 +27,16 @@ class GameWindow
 
 
         // --------------------------------------------------------------------
+        // Turns message into texture (sdlResultTexture). It return true if 
+        // everything is successful.
+        // If you give a pointer to a non-nullptr texture,
+        // then nothing will happen and the function will return false. 
+        bool strTextToSdlTexture( SDL_Texture*& sdlResultTexture,
+                std::string strMessage, int iFontSize = -1,
+                SDL_Color *psdlColor = nullptr );
+
+
+        // --------------------------------------------------------------------
         // Add object to end of m_pvectRefreshElements (if it not in).
         // Return index.
         int addObjectForRenderer( GameObject *pGameObject );
@@ -43,6 +53,16 @@ class GameWindow
 
 
         // --------------------------------------------------------------------
+        // Function for checking and correct conversion of int to uint8.
+        bool intToUint8( Uint8 *uint8Result, int iNumber );
+
+
+        // --------------------------------------------------------------------
+        // Geters
+        int getDefaultFontSize();
+        SDL_Color getDefaultFontColor();
+
+        // --------------------------------------------------------------------
         // This flag is in case an error occurs while creating an object.
         // If it false, we correctly break all and destroy objects, which were
         // created earlier.
@@ -51,6 +71,11 @@ class GameWindow
 
     // ------------------------------------------------------------------------
     protected:
+        // Load data from ini-file for further work with the font.
+        void prepareFont();
+
+
+        // --------------------------------------------------------------------
         SDL_Window* m_sdlGameWindow;
         SDL_Renderer* m_sdlRenderer;
 
@@ -59,13 +84,16 @@ class GameWindow
         int m_iWidth;
         int m_iHeight;
 
-        // An array of objects for rendering. and the index of the first free
-        // cell (so as not to search for it every time).
+        // This vector stores pointers to all objects that need to be render.
         std::vector<GameObject*> m_pvectRefreshElements;
+
+        int m_iDefaultFontSize;
+        SDL_Color m_sdlDefaultFontColor;
+        std::string m_strFontFile;
 
     // ------------------------------------------------------------------------
     private:
-        // Initializing SDL (in general), window, render font.
+        // Initializing SDL (in general), image, window, render, font.
         bool initSdlComponents();
 
 };

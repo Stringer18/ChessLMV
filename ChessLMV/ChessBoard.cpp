@@ -50,9 +50,8 @@ ChessBoard::~ChessBoard()
             }
         }
     }
-    m_gameWindow->refresh();
-    SDL_Delay(2000);
     m_gameWindow->deleteObjectFromRenderer( this );
+    m_gameWindow->refresh();
 }
 
 
