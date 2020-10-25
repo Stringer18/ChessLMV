@@ -20,7 +20,26 @@ ChessBoard::ChessBoard( GameWindow *inputGameWindow ) :
 
         prepareGridBoard();
         m_gameWindow->m_fIsSuccess = prepareFigures();
-        if( !( m_gameWindow->m_fIsSuccess ) )
+        if( m_gameWindow->m_fIsSuccess )
+        {
+            isBlackMove = false;
+
+            int iTextPositionX = 0;
+            int iTextPositionY = 0;
+            int iTextWidthSize = 0;
+
+            getDataFromIni( &iTextPositionX, "textNowMove", "iPositionX", 600);
+            getDataFromIni( &iTextPositionY, "textNowMove", "iPositionY", 150);
+            getDataFromIni( &iTextWidthSize, "textNowMove", "iWidthSize", 150);
+            
+            pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
+                    IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
+                    isBlackMove );
+            pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
+                    IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
+                    !isBlackMove );
+        }
+        else
         {
             setToLog( std::string( "There are problems with creating " ) +
                     "and/or filling the playing field." );
@@ -50,8 +69,29 @@ ChessBoard::~ChessBoard()
             }
         }
     }
+
+    if( pTextNowBlack != nullptr ) { delete pTextNowBlack; }
+    if( pTextNowWhite != nullptr ) { delete pTextNowWhite; }
+
     m_gameWindow->deleteObjectFromRenderer( this );
-    m_gameWindow->refresh();
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::pushAnalysis( IntPoint pushPoint )
+{
+    printf( "PushBoard = %i %i\n", pushPoint.x, pushPoint.y );
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::changeActualMove()
+{
+    isBlackMove = !isBlackMove;
+    pTextNowBlack->changeVisible();
+    pTextNowWhite->changeVisible();
 }
 
 

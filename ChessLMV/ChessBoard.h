@@ -6,6 +6,7 @@
 #include "GameWindow.h"
 #include "HelpFunctions.hpp"
 #include "CellBoard.h"
+#include "TextBox.h"
 
 #include "BlackRook.h"
 #include "BlackKnight.h"
@@ -20,6 +21,7 @@
 #include "WhiteQueen.h"
 #include "WhiteKing.h"
 
+
 #define _BOARD_SIZE_    8
 
 // ----------------------------------------------------------------------------
@@ -29,20 +31,41 @@ class ChessBoard : public GameObjectInsertion
         ChessBoard( GameWindow *inputGameWindow );
         ~ChessBoard();
 
+
+        // --------------------------------------------------------------------
+        // Check the place of the click and performs actions based
+        // on the context. This function is called when there was a click
+        // to the board.
+        void pushAnalysis( IntPoint pushPoint );
+
  //       bool addFigure( int iIndexX, int iIndexY, GameObject *pFigure);
  //       void delFigure( int iIndexX, int iIndexY );
 
     // ------------------------------------------------------------------------
     protected:
+        // Change the current player (pass the move).
+        void changeActualMove();
+
+
+
+
+        // --------------------------------------------------------------------
+        CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
+
+        // Whose turn is stored here. True - black, false - white.
+        bool isBlackMove;
+        TextBox *pTextNowBlack;
+        TextBox *pTextNowWhite;
+
+
+
+    // ------------------------------------------------------------------------
+    private:
         // Prepares a grid of coordinates.
         void prepareGridBoard();
 
         // Creates and places figures.
         bool prepareFigures();
-
-        // --------------------------------------------------------------------
-        CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
-
 };
 
 

@@ -11,15 +11,21 @@ class TextBox : public GameObjectInsertion
 {
     public:
         TextBox( GameWindow *inputGameWindow, std::string strMessage,
-                IntPoint position, bool fIsVisible = false, int iFontSize = -1,
-                SDL_Color *sdlColor = nullptr );
-        //TextBox( GameWindow *inputGameWindow, bool fIsVisible = false );
+                IntPoint position, Uint32 uiWidthSize, bool fIsVisible = false,
+                int iFontSize = -1, SDL_Color *sdlColor = nullptr );
         ~TextBox();
 
 
+        // --------------------------------------------------------------------
+        // 
+        void changeVisible();
+
+
+        // --------------------------------------------------------------------
+        bool getIsVisible();
+
     // ------------------------------------------------------------------------
     protected:
-        std::string m_strMessage;
         bool m_fIsVisible;
 };
 

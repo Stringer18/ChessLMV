@@ -32,18 +32,18 @@ class GameWindow
         // If you give a pointer to a non-nullptr texture,
         // then nothing will happen and the function will return false. 
         bool strTextToSdlTexture( SDL_Texture*& sdlResultTexture,
-                std::string strMessage, int iFontSize = -1,
+                std::string strMessage, Uint32 uiWidthSize, int iFontSize = -1,
                 SDL_Color *psdlColor = nullptr );
 
 
         // --------------------------------------------------------------------
-        // Add object to end of m_pvectRefreshElements (if it not in).
+        // Add object to end of m_vectpRefreshElements (if it not in).
         // Return index.
         int addObjectForRenderer( GameObject *pGameObject );
 
 
         // --------------------------------------------------------------------
-        // Delete object from m_pvectRefreshElements.
+        // Delete object from m_vectpRefreshElements.
         void deleteObjectFromRenderer( GameObject *pGameObject );
 
 
@@ -56,11 +56,6 @@ class GameWindow
         // Function for checking and correct conversion of int to uint8.
         bool intToUint8( Uint8 *uint8Result, int iNumber );
 
-
-        // --------------------------------------------------------------------
-        // Geters
-        int getDefaultFontSize();
-        SDL_Color getDefaultFontColor();
 
         // --------------------------------------------------------------------
         // This flag is in case an error occurs while creating an object.
@@ -85,7 +80,7 @@ class GameWindow
         int m_iHeight;
 
         // This vector stores pointers to all objects that need to be render.
-        std::vector<GameObject*> m_pvectRefreshElements;
+        std::vector<GameObject*> m_vectpRefreshElements;
 
         int m_iDefaultFontSize;
         SDL_Color m_sdlDefaultFontColor;

@@ -8,42 +8,137 @@ int main(int argc, char *argv[])
     setToLog( "Start program." );
     
     GameWindow gameWindow;
-    Background *background = new Background( &gameWindow );
+    if( !( gameWindow.m_fIsSuccess ) )
+    {
+        setToLog( "Cannot create window." );
+        return 1;
+    }
 
+    Background *pBackground = nullptr;
+    ChessBoard *pChessBoard = nullptr;
+    TextMenu *pTextMenu = nullptr;
+
+    prepareElements( &gameWindow, &pBackground, &pChessBoard, &pTextMenu );
     gameWindow.refresh();
-    SDL_Delay(2000);
 
-    ChessBoard *chessBoard = new ChessBoard( &gameWindow );
+    while( gameWindow.m_fIsSuccess )
+    {
+        pushPoint( &gameWindow, &pBackground, &pChessBoard, &pTextMenu );
+        gameWindow.refresh();
+    }
 
-    gameWindow.refresh();
-    SDL_Delay(2000);
-
-    TextBox * textBox = new TextBox( &gameWindow, "Test Message.",
-            IntPoint( 80, 120 ), true );
-
-    gameWindow.refresh();
-    SDL_Delay(2000);
-
-    delete textBox;
-
-    gameWindow.refresh();
-    SDL_Delay(2000);
-
-    delete chessBoard;
-
-    gameWindow.refresh();
-    SDL_Delay(2000);
-
-    delete background;
-
-    gameWindow.refresh();
-    SDL_Delay(2000);
-
+    delElements( &pBackground, &pChessBoard, &pTextMenu );
     setToLog( "Exit.\n\n" );
-    getchar();
+    //getchar();
     return 0;
 }
 
 
 
 // ----------------------------------------------------------------------------
+bool prepareElements( GameWindow *pGameWindow, Background **ppBackground,
+        ChessBoard **ppChessBoard, TextMenu **ppTextMenu )
+{
+
+    *ppBackground = new Background( pGameWindow );
+    if( !( pGameWindow->m_fIsSuccess ) )
+    {
+        setToLog( "Cannot create background." );
+        return false;
+    }
+
+    *ppChessBoard = new ChessBoard( pGameWindow );
+    if( !( pGameWindow->m_fIsSuccess ) )
+    {
+        setToLog( "Cannot create chess board." );
+        return false;
+    }
+
+    *ppTextMenu = new TextMenu( pGameWindow );
+    return true;
+}
+
+
+
+// ----------------------------------------------------------------------------
+void delElements( Background **ppBackground, ChessBoard **ppChessBoard,
+        TextMenu **ppTextMenu )
+{
+    if( *ppTextMenu != nullptr ) { delete *ppTextMenu; }
+    if( *ppChessBoard != nullptr ) { delete *ppChessBoard; }
+    if( *ppBackground != nullptr ) { delete *ppBackground; }
+}
+
+
+
+// ----------------------------------------------------------------------------
+void pushPoint( GameWindow *pGameWindow, Background **ppBackground,
+        ChessBoard **ppChessBoard, TextMenu **ppTextMenu )
+{
+    SDL_Event sdlEvent;
+    while( true )
+    {
+        SDL_WaitEvent( &sdlEvent );
+        switch( sdlEvent.type )
+        {
+            case SDL_QUIT:
+            {
+                pGameWindow->m_fIsSuccess = false;
+                return; // break;
+            }
+            case SDL_MOUSEBUTTONDOWN:
+            {
+                IntPoint pushPosition = IntPoint( sdlEvent.button.x,
+                        sdlEvent.button.y );
+
+                // Check push board.
+                if( checkPushPlace( *ppChessBoard, pushPosition ) )
+                {
+                    (*ppChessBoard)->pushAnalysis( IntPoint( sdlEvent.button.x,
+                            sdlEvent.button.y ) );
+                    return; // break;
+                }
+
+                // ------------------------------------------------------------
+                // Check push menu.
+                if( checkPushPlace( *ppTextMenu, pushPosition ) )
+                {
+                    int iResultAnalysis = (*ppTextMenu)->pushAnalysis(
+                            IntPoint( sdlEvent.button.x, sdlEvent.button.y ) );
+                    switch( iResultAnalysis )
+                    {
+                        case _NEW_GAME_:
+                        {
+                            delElements( ppBackground, ppChessBoard,
+                                    ppTextMenu );
+                            prepareElements( pGameWindow, ppBackground,
+                                    ppChessBoard, ppTextMenu );
+                            break;
+                        }
+                        case _EXIT_:
+                        {
+                            pGameWindow->m_fIsSuccess = false;
+                            break;
+                        }
+                    }
+                    return; // break;
+                }
+                break;
+            }
+        }
+    }
+}
+
+
+
+// ----------------------------------------------------------------------------
+bool checkPushPlace( GameObject *pSpace, IntPoint pushPosition )
+{
+    IntPoint buffPosition = pSpace->getPosition();
+    IntPoint buffSize = pSpace->getSize();
+
+    return ( ( pushPosition.x >= buffPosition.x ) && (
+            pushPosition.x <= buffPosition.x + buffSize.x ) && (
+            pushPosition.y >= buffPosition.y ) && (
+            pushPosition.y <= buffPosition.y + buffSize.y ) );
+}

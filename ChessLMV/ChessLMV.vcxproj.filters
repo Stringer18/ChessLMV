@@ -105,6 +105,9 @@
     <ClCompile Include="TextBox.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="TextMenu.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessLMV.h">
@@ -171,6 +174,9 @@
       <Filter>Заголовочные файлы\Figures\White</Filter>
     </ClInclude>
     <ClInclude Include="TextBox.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMenu.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

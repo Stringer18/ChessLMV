@@ -19,7 +19,7 @@ GameWindow::GameWindow()
 // ----------------------------------------------------------------------------
 GameWindow::~GameWindow()
 {
-    m_pvectRefreshElements.clear();
+    m_vectpRefreshElements.clear();
     if( m_sdlRenderer != nullptr ) { SDL_DestroyRenderer( m_sdlRenderer ); }
 	if( m_sdlGameWindow != nullptr ) { SDL_DestroyWindow( m_sdlGameWindow ); }
     TTF_Quit();
@@ -104,7 +104,7 @@ bool GameWindow::strPngTextureToSdlTexture( SDL_Texture*& sdlResultTexture,
 
 // ----------------------------------------------------------------------------
 bool GameWindow::strTextToSdlTexture( SDL_Texture*& sdlResultTexture,
-                std::string strMessage, int iFontSize /*= -1*/,
+                std::string strMessage, Uint32 uiWidthSize, int iFontSize /*= -1*/,
                 SDL_Color *psdlColor /*= nullptr*/ )
 {
     if( sdlResultTexture != nullptr )
@@ -122,8 +122,8 @@ bool GameWindow::strTextToSdlTexture( SDL_Texture*& sdlResultTexture,
         return false;
     }
 
-    SDL_Surface *sdlBuffSurface = TTF_RenderText_Blended( pFont,
-            strMessage.c_str(), *psdlColor);
+    SDL_Surface *sdlBuffSurface = TTF_RenderText_Blended_Wrapped( pFont,
+            strMessage.c_str(), *psdlColor, uiWidthSize );
     if( sdlBuffSurface == nullptr )
     {
         TTF_CloseFont( pFont );
@@ -148,15 +148,15 @@ bool GameWindow::strTextToSdlTexture( SDL_Texture*& sdlResultTexture,
 // ----------------------------------------------------------------------------
 int GameWindow::addObjectForRenderer( GameObject *pGameObject )
 {
-    for( unsigned int i = 0 ; i < m_pvectRefreshElements.size() ; i++ )
+    for( unsigned int i = 0 ; i < m_vectpRefreshElements.size() ; i++ )
     {
-        if( m_pvectRefreshElements[i] == pGameObject )
+        if( m_vectpRefreshElements[i] == pGameObject )
         {
             return i;
         }
     }
-    m_pvectRefreshElements.push_back( pGameObject );
-    return ( m_pvectRefreshElements.size() - 1 );
+    m_vectpRefreshElements.push_back( pGameObject );
+    return ( m_vectpRefreshElements.size() - 1 );
 }
 
 
@@ -164,11 +164,11 @@ int GameWindow::addObjectForRenderer( GameObject *pGameObject )
 // ----------------------------------------------------------------------------
 void GameWindow::deleteObjectFromRenderer( GameObject *pGameObject )
 {
-    for( unsigned int i = 0 ; i < m_pvectRefreshElements.size() ; i++ )
+    for( unsigned int i = 0 ; i < m_vectpRefreshElements.size() ; i++ )
     {
-        if( m_pvectRefreshElements[i] == pGameObject )
+        if( m_vectpRefreshElements[i] == pGameObject )
         {
-            m_pvectRefreshElements.erase( m_pvectRefreshElements.begin() + i );
+            m_vectpRefreshElements.erase( m_vectpRefreshElements.begin() + i );
             return;
         }
     }
@@ -181,10 +181,10 @@ void GameWindow::refresh()
 {
     SDL_RenderClear( m_sdlRenderer );
 
-    for( unsigned int i = 0 ; i < m_pvectRefreshElements.size() ; i++ )
+    for( unsigned int i = 0 ; i < m_vectpRefreshElements.size() ; i++ )
     {
-        SDL_RenderCopy( m_sdlRenderer, m_pvectRefreshElements[i]->getTexture(),
-                NULL, m_pvectRefreshElements[i]->getRect() );
+        SDL_RenderCopy( m_sdlRenderer, m_vectpRefreshElements[i]->getTexture(),
+                NULL, m_vectpRefreshElements[i]->getRect() );
     }
         
     SDL_RenderPresent( m_sdlRenderer );
@@ -213,12 +213,6 @@ bool GameWindow::intToUint8( Uint8 *uint8Result, int iNumber )
     *uint8Result = (Uint8) iNumber;
     return true;
 }
-
-
-
-// ----------------------------------------------------------------------------
-int GameWindow::getDefaultFontSize() { return m_iDefaultFontSize; }
-SDL_Color GameWindow::getDefaultFontColor() { return m_sdlDefaultFontColor; }
 
 
 
