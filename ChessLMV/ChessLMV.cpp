@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     while( gameWindow.m_fIsSuccess )
     {
-        pushPoint( &gameWindow, &pBackground, &pChessBoard, &pTextMenu );
+        pushPosition( &gameWindow, &pBackground, &pChessBoard, &pTextMenu );
         gameWindow.refresh();
     }
 
@@ -72,7 +72,7 @@ void delElements( Background **ppBackground, ChessBoard **ppChessBoard,
 
 
 // ----------------------------------------------------------------------------
-void pushPoint( GameWindow *pGameWindow, Background **ppBackground,
+void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
         ChessBoard **ppChessBoard, TextMenu **ppTextMenu )
 {
     SDL_Event sdlEvent;

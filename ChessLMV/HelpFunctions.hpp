@@ -18,7 +18,6 @@
 
 
 // ----------------------------------------------------------------------------
-// Templates are not my.
 template <typename T>
 std::string valueAsString(T value)
 {

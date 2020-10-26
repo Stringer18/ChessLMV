@@ -1,16 +1,20 @@
 #include "ChessBoard.h"
 
 // ----------------------------------------------------------------------------
-ChessBoard::ChessBoard( GameWindow *inputGameWindow ) :
-        GameObjectInsertion( inputGameWindow )
+ChessBoard::ChessBoard( GameWindow *pGameWindow ) :
+        GameObjectInsertion( pGameWindow )
 {
     m_gameWindow->m_fIsSuccess = prepareBoard();
     if( m_gameWindow->m_fIsSuccess )
     {
-        m_gameWindow->m_fIsSuccess = prepareFigures();
+        m_gameWindow->m_fIsSuccess = prepareCellSelection();
         if( m_gameWindow->m_fIsSuccess )
         {
-            m_gameWindow->m_fIsSuccess = prepareText();
+            m_gameWindow->m_fIsSuccess = prepareFigures();
+            if( m_gameWindow->m_fIsSuccess )
+            {
+                m_gameWindow->m_fIsSuccess = prepareText();
+            }
         }
     }
 }
@@ -20,6 +24,9 @@ ChessBoard::ChessBoard( GameWindow *inputGameWindow ) :
 // ----------------------------------------------------------------------------
 ChessBoard::~ChessBoard()
 {
+    m_gameWindow->deleteObjectFromRenderer( m_pCellSelection );
+    if( m_pCellSelection != nullptr ) { delete m_pCellSelection; }
+
     for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
     {
         for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
@@ -33,8 +40,8 @@ ChessBoard::~ChessBoard()
         }
     }
 
-    if( pTextNowBlack != nullptr ) { delete pTextNowBlack; }
-    if( pTextNowWhite != nullptr ) { delete pTextNowWhite; }
+    if( m_pTextNowBlack != nullptr ) { delete m_pTextNowBlack; }
+    if( m_pTextNowWhite != nullptr ) { delete m_pTextNowWhite; }
 
     m_gameWindow->deleteObjectFromRenderer( this );
 }
@@ -44,7 +51,66 @@ ChessBoard::~ChessBoard()
 // ----------------------------------------------------------------------------
 void ChessBoard::pushAnalysis( IntPoint pushPoint )
 {
-    printf( "PushBoard = %i %i\n", pushPoint.x, pushPoint.y );
+    IntPoint pushIndex = pushPointToCellPoint( pushPoint );
+    if( m_IndexCellSelection.x == -1 )
+    {
+        // It's part, if figure didn`t select.
+        // Next, check if we can select a figure in the clicked cell.
+        if( ( pushIndex.x > -1 ) && ( pushIndex.x < 8 ) && (
+                pushIndex.y > -1 ) && ( pushIndex.y < 8 ) && (
+                m_board[pushIndex.x][pushIndex.y].m_pFigure != nullptr ) )
+        {
+            // !!! Add check black/white figure !!!
+            // Select.
+            m_IndexCellSelection = pushIndex;
+            m_pCellSelection->setPosition( m_board[pushIndex.x][pushIndex.y].
+                    getPosition() );
+            m_gameWindow->addObjectForRenderer( m_pCellSelection );
+            // This "return" is't need, but with it it's clearer and calmer.
+            return; 
+        }
+    }
+    else
+    {
+        // It's part, if figure selected.
+        // Next, we check what to do with the selected figure - deselect or
+        // make a move.
+        if( ( pushIndex.x > -1 ) || ( pushIndex.x < 8 ) || (
+                pushIndex.y > -1 ) || ( pushIndex.y < 8 ) || ( (
+                pushIndex.x != m_IndexCellSelection.x ) && (
+                pushIndex.y != m_IndexCellSelection.y ) ) )
+        {
+            // Move.
+            // !!! Do not attack other pieces yet, not yet implemented.
+            // !!! Will lead to memory leak.
+            m_board[pushIndex.x][pushIndex.y].m_pFigure =
+                    m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].
+                    m_pFigure;
+            m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure =
+                    nullptr;
+            m_board[pushIndex.x][pushIndex.y].m_pFigure->setPosition(
+                    m_board[pushIndex.x][pushIndex.y].getPosition() );
+        }
+
+        // Deselect.
+        m_gameWindow->deleteObjectFromRenderer( m_pCellSelection );
+        m_IndexCellSelection = IntPoint( -1, -1 );
+        m_pCellSelection->setPosition( m_sdlRect->x, m_sdlRect->y );
+        // This "return" is't need, but with it it's clearer and calmer.
+        return;
+    }
+}
+
+
+
+// ----------------------------------------------------------------------------
+IntPoint ChessBoard::pushPointToCellPoint( IntPoint pushPoint )
+{
+    int iIndexX = (int) ( floor( ( (double) pushPoint.x -
+            m_board[0][0].getPosition().x ) / m_iStepX ) );
+    int iIndexY = (int) ( floor( ( (double) pushPoint.y -
+            m_board[0][0].getPosition().y ) / m_iStepY ) );
+    return IntPoint( iIndexX, iIndexY );
 }
 
 
@@ -53,8 +119,8 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
 void ChessBoard::changeActualMove()
 {
     isBlackMove = !isBlackMove;
-    pTextNowBlack->changeVisible();
-    pTextNowWhite->changeVisible();
+    m_pTextNowBlack->changeVisible();
+    m_pTextNowWhite->changeVisible();
 }
 
 
@@ -89,25 +155,50 @@ void ChessBoard::prepareGridBoard()
 {
     int iDeltaFirstFigurePositionX = 0;
     int iDeltaFirstFigurePositionY = 0;
-    int iStepX = 0;
-    int iStepY = 0;
 
     getDataFromIni( &iDeltaFirstFigurePositionX, "chessBoard",
             "iDeltaFirstFigurePositionX", 40 );
     getDataFromIni( &iDeltaFirstFigurePositionY, "chessBoard",
             "iDeltaFirstFigurePositionY", 40 );
-    getDataFromIni( &iStepX, "chessBoard", "iStepX", 40 );
-    getDataFromIni( &iStepY, "chessBoard", "iStepY", 40 );
+    getDataFromIni( &m_iStepX, "chessBoard", "iStepX", 40 );
+    getDataFromIni( &m_iStepY, "chessBoard", "iStepY", 40 );
 
     for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
     {
         for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
         {
             m_board[i][j].setPosition( m_sdlRect->x + 
-                    iDeltaFirstFigurePositionX + i * iStepX,
-                    m_sdlRect->y + iDeltaFirstFigurePositionY + j * iStepY );
+                    iDeltaFirstFigurePositionX + i * m_iStepX,
+                    m_sdlRect->y + iDeltaFirstFigurePositionY + j * m_iStepY );
         }
     }
+}
+
+
+
+// ----------------------------------------------------------------------------
+bool ChessBoard::prepareCellSelection()
+{
+    m_IndexCellSelection = IntPoint( -1, -1 );
+
+    std::string strBuff("");
+    SDL_Texture *sdlBuffTexture = nullptr;
+    
+    getDataFromIni( strBuff, "chessBoard", "strCellSelectionTexture",
+            ".\\Resources\\CellSelection.png" );
+    m_gameWindow->m_fIsSuccess = m_gameWindow->strPngTextureToSdlTexture(
+            sdlBuffTexture, strBuff );
+
+    m_pCellSelection = new GameObject( sdlBuffTexture, m_sdlRect->x,
+            m_sdlRect->y, m_iStepX, m_iStepY );
+
+    if( !( m_gameWindow->m_fIsSuccess ) )
+    {
+        setToLog( "Cell Selection texture didn't create." );
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -199,13 +290,13 @@ bool ChessBoard::prepareText()
     getDataFromIni( &iTextPositionY, "textNowMove", "iPositionY", 150);
     getDataFromIni( &iTextWidthSize, "textNowMove", "iWidthSize", 150);
             
-    pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
+    m_pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
             IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
             isBlackMove );
-    pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
+    m_pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
             IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
             !isBlackMove );
-    if( ( !( pTextNowBlack->isValid() ) ) || ( !( pTextNowWhite->isValid() ) ) )
+    if( ( !( m_pTextNowBlack->isValid() ) ) || ( !( m_pTextNowWhite->isValid() ) ) )
     {
         setToLog( "Cannot create text section for board." );
         return false;

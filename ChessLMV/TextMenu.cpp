@@ -125,16 +125,16 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
 
 
 // ----------------------------------------------------------------------------
-bool TextMenu::checkPushButton( TextBox *pButton, IntPoint pushPosition )
+bool TextMenu::checkPushButton( TextBox *pButton, IntPoint pushPoint )
 {
-    IntPoint buffPosition = pButton->getPosition();
+    IntPoint buffPoint = pButton->getPosition();
     IntPoint buffSize = pButton->getSize();
 
-    return ( ( pushPosition.x >= buffPosition.x ) && (
-            pushPosition.x <= buffPosition.x + buffSize.x ) && (
-            pushPosition.y >= buffPosition.y ) && (
-            pushPosition.y <= buffPosition.y + buffSize.y ) && (
-            pButton->getIsVisible() ) );
+    return ( ( pButton->getIsVisible() ) && (
+            pushPoint.x >= buffPoint.x ) && (
+            pushPoint.x <= buffPoint.x + buffSize.x ) && (
+            pushPoint.y >= buffPoint.y ) && (
+            pushPoint.y <= buffPoint.y + buffSize.y ) );
 }
 
 

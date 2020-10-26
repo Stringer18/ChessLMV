@@ -27,7 +27,7 @@ class TextMenu : public GameObjectInsertion
     // ------------------------------------------------------------------------
     protected:
         // Checks if a specific button in menu has been pressed.
-        bool checkPushButton( TextBox * pButton, IntPoint pushPosition );
+        bool checkPushButton( TextBox * pButton, IntPoint pushPoint );
 
         TextBox *pTextNewGame;
         TextBox *pTextExit;

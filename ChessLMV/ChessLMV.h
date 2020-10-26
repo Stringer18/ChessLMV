@@ -25,7 +25,7 @@ void delElements( Background **ppBackground, ChessBoard **ppChessBoard,
 // ----------------------------------------------------------------------------
 // Reads button presses and analysis it. Decides what action to take as a
 // result of this click.
-void pushPoint( GameWindow *pGameWindow, Background **ppBackground,
+void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
         ChessBoard **ppChessBoard, TextMenu **ppTextMenu );
 
 

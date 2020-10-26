@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <math.h>
 
 #include "GameObjectInsertion.h"
 #include "GameWindow.h"
@@ -28,7 +29,7 @@
 class ChessBoard : public GameObjectInsertion
 {
     public:
-        ChessBoard( GameWindow *inputGameWindow );
+        ChessBoard( GameWindow *pGameWindow );
         ~ChessBoard();
 
 
@@ -43,20 +44,31 @@ class ChessBoard : public GameObjectInsertion
 
     // ------------------------------------------------------------------------
     protected:
+        // The function takes as an input the place of the click within the
+        // board and returns the index (IntPoint) of the cell where this click
+        // fell. If the value of any coordinate == -1 or 8, then we clicked
+        // past the cells.
+        IntPoint pushPointToCellPoint( IntPoint pushPoint );
+
         // Change the current player (pass the move).
         void changeActualMove();
 
 
-
-
         // --------------------------------------------------------------------
         CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
+        int m_iStepX, m_iStepY; // The step (size) of the squares of the board.
 
         // Whose turn is stored here. True - black, false - white.
         bool isBlackMove;
-        TextBox *pTextNowBlack;
-        TextBox *pTextNowWhite;
+        TextBox *m_pTextNowBlack;
+        TextBox *m_pTextNowWhite;
 
+        // The index of the selected cell is stored here 
+        // ( m_IndexCellSelection ). When no cell is selected, then the value
+        // is == (-1, -1). It is indicator for know, is selection
+        // ( m_pCellSelection ) visible or no.
+        IntPoint m_IndexCellSelection;
+        GameObject *m_pCellSelection;
 
 
     // ------------------------------------------------------------------------
@@ -67,6 +79,7 @@ class ChessBoard : public GameObjectInsertion
         // Use only from constructor.
         bool prepareBoard();
         void prepareGridBoard();
+        bool prepareCellSelection();
         bool prepareFigures();
         bool prepareText(); 
 };
