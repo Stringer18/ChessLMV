@@ -61,11 +61,14 @@ class ChessBoard : public GameObjectInsertion
 
     // ------------------------------------------------------------------------
     private:
-        // Prepares a grid of coordinates.
+        // This function block prepares different elements of the board (board,
+        // figures, etc.). The code has been moved out of the constructor into
+        // separate functions for convenience and readability.
+        // Use only from constructor.
+        bool prepareBoard();
         void prepareGridBoard();
-
-        // Creates and places figures.
         bool prepareFigures();
+        bool prepareText(); 
 };
 
 

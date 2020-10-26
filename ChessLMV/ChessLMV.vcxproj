@@ -126,9 +126,11 @@
     <None Include="Resources\BlackPawn.png" />
     <None Include="Resources\BlackQueen.png" />
     <None Include="Resources\BlackRook.png" />
+    <None Include="Resources\CellSelection.png" />
     <None Include="Resources\ChessBoard.png" />
     <None Include="Resources\ChessLMV.ini" />
     <None Include="Resources\OldStandardTTItalic.ttf" />
+    <None Include="Resources\UnknownFigure.png" />
     <None Include="Resources\WhiteBishop.png" />
     <None Include="Resources\WhiteKing.png" />
     <None Include="Resources\WhiteKnight.png" />

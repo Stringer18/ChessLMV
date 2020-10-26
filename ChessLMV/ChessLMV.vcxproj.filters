@@ -232,5 +232,11 @@
     <None Include="Resources\OldStandardTTItalic.ttf">
       <Filter>Файлы ресурсов\Resources</Filter>
     </None>
+    <None Include="Resources\UnknownFigure.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="Resources\CellSelection.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
   </ItemGroup>
 </Project>

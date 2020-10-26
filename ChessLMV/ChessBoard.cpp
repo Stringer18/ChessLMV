@@ -4,51 +4,14 @@
 ChessBoard::ChessBoard( GameWindow *inputGameWindow ) :
         GameObjectInsertion( inputGameWindow )
 {
-    std::string strBuff("");
-    getDataFromIni( strBuff, "chessBoard", "strTexture",
-            ".\\Resources\\ChessBoard.png" );
-    m_gameWindow->m_fIsSuccess = m_gameWindow->strPngTextureToSdlTexture(
-            m_sdlTexture, strBuff );
-
+    m_gameWindow->m_fIsSuccess = prepareBoard();
     if( m_gameWindow->m_fIsSuccess )
     {
-        getDataFromIni( &(m_sdlRect->x), "chessBoard", "iPositionX", 100 );
-        getDataFromIni( &(m_sdlRect->y), "chessBoard", "iPositionY", 100 );
-        getDataFromIni( &(m_sdlRect->w), "chessBoard", "iWidth", 400 );
-        getDataFromIni( &(m_sdlRect->h), "chessBoard", "iHeight", 400 );
-        m_gameWindow->addObjectForRenderer( this );
-
-        prepareGridBoard();
         m_gameWindow->m_fIsSuccess = prepareFigures();
         if( m_gameWindow->m_fIsSuccess )
         {
-            isBlackMove = false;
-
-            int iTextPositionX = 0;
-            int iTextPositionY = 0;
-            int iTextWidthSize = 0;
-
-            getDataFromIni( &iTextPositionX, "textNowMove", "iPositionX", 600);
-            getDataFromIni( &iTextPositionY, "textNowMove", "iPositionY", 150);
-            getDataFromIni( &iTextWidthSize, "textNowMove", "iWidthSize", 150);
-            
-            pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
-                    IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
-                    isBlackMove );
-            pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
-                    IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
-                    !isBlackMove );
+            m_gameWindow->m_fIsSuccess = prepareText();
         }
-        else
-        {
-            setToLog( std::string( "There are problems with creating " ) +
-                    "and/or filling the playing field." );
-        }
-
-    }
-    else
-    {
-        setToLog( "Chess board texture didn't create." );
     }
 }
 
@@ -97,6 +60,31 @@ void ChessBoard::changeActualMove()
 
 
 // ----------------------------------------------------------------------------
+bool ChessBoard::prepareBoard()
+{
+    std::string strBuff("");
+    getDataFromIni( strBuff, "chessBoard", "strTexture",
+            ".\\Resources\\ChessBoard.png" );
+    m_gameWindow->m_fIsSuccess = m_gameWindow->strPngTextureToSdlTexture(
+            m_sdlTexture, strBuff );
+    if( !( m_gameWindow->m_fIsSuccess ) )
+    {
+        setToLog( "Chess board texture didn't create." );
+        return false;
+    }
+    getDataFromIni( &(m_sdlRect->x), "chessBoard", "iPositionX", 100 );
+    getDataFromIni( &(m_sdlRect->y), "chessBoard", "iPositionY", 100 );
+    getDataFromIni( &(m_sdlRect->w), "chessBoard", "iWidth", 400 );
+    getDataFromIni( &(m_sdlRect->h), "chessBoard", "iHeight", 400 );
+
+    prepareGridBoard();
+    m_gameWindow->addObjectForRenderer( this );
+    return true;
+}
+
+
+
+// ----------------------------------------------------------------------------
 void ChessBoard::prepareGridBoard()
 {
     int iDeltaFirstFigurePositionX = 0;
@@ -120,7 +108,6 @@ void ChessBoard::prepareGridBoard()
                     m_sdlRect->y + iDeltaFirstFigurePositionY + j * iStepY );
         }
     }
-
 }
 
 
@@ -180,9 +167,48 @@ bool ChessBoard::prepareFigures()
     m_board[4][j].m_pFigure = new WhiteKing( m_gameWindow,
             m_board[4][j].getPosition() );
 
+    // Check figures.
+    for( j = 0 ; j < _BOARD_SIZE_ ; j++ )
+    {
+        if( j == 2 ) { j = 6; } // Skip nullptr part of board.
+        for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
+        {
+            if( !( m_board[i][j].m_pFigure->isValid() ) )
+            {
+                setToLog( std::string( "There are problems with creating " ) +
+                        "and/or filling the playing field." );
+                return false;
+            }
+        }
+    }
     return true;
 }
 
 
 
 // ----------------------------------------------------------------------------
+bool ChessBoard::prepareText()
+{
+    isBlackMove = false;
+
+    int iTextPositionX = 0;
+    int iTextPositionY = 0;
+    int iTextWidthSize = 0;
+
+    getDataFromIni( &iTextPositionX, "textNowMove", "iPositionX", 600);
+    getDataFromIni( &iTextPositionY, "textNowMove", "iPositionY", 150);
+    getDataFromIni( &iTextWidthSize, "textNowMove", "iWidthSize", 150);
+            
+    pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
+            IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
+            isBlackMove );
+    pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
+            IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
+            !isBlackMove );
+    if( ( !( pTextNowBlack->isValid() ) ) || ( !( pTextNowWhite->isValid() ) ) )
+    {
+        setToLog( "Cannot create text section for board." );
+        return false;
+    }
+    return true;
+}
