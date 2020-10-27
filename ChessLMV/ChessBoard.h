@@ -8,19 +8,7 @@
 #include "HelpFunctions.hpp"
 #include "CellBoard.h"
 #include "TextBox.h"
-
-#include "BlackRook.h"
-#include "BlackKnight.h"
-#include "BlackBishop.h"
-#include "BlackQueen.h"
-#include "BlackKing.h"
-#include "BlackPawn.h"
-#include "WhitePawn.h"
-#include "WhiteRook.h"
-#include "WhiteKnight.h"
-#include "WhiteBishop.h"
-#include "WhiteQueen.h"
-#include "WhiteKing.h"
+#include "Figure.h"
 
 
 #define _BOARD_SIZE_    8

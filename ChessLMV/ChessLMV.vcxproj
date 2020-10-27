@@ -69,15 +69,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
-    <ClCompile Include="BlackBishop.cpp" />
-    <ClCompile Include="BlackKing.cpp" />
-    <ClCompile Include="BlackKnight.cpp" />
-    <ClCompile Include="BlackPawn.cpp" />
-    <ClCompile Include="BlackQueen.cpp" />
-    <ClCompile Include="BlackRook.cpp" />
     <ClCompile Include="CellBoard.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="ChessLMV.cpp" />
+    <ClCompile Include="Figure.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectInsertion.cpp" />
     <ClCompile Include="GameWindow.cpp" />
@@ -85,24 +80,13 @@
     <ClCompile Include="IntPoint.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextMenu.cpp" />
-    <ClCompile Include="WhiteBishop.cpp" />
-    <ClCompile Include="WhiteKing.cpp" />
-    <ClCompile Include="WhiteKnight.cpp" />
-    <ClCompile Include="WhitePawn.cpp" />
-    <ClCompile Include="WhiteQueen.cpp" />
-    <ClCompile Include="WhiteRook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
-    <ClInclude Include="BlackBishop.h" />
-    <ClInclude Include="BlackKing.h" />
-    <ClInclude Include="BlackKnight.h" />
-    <ClInclude Include="BlackPawn.h" />
-    <ClInclude Include="BlackQueen.h" />
-    <ClInclude Include="BlackRook.h" />
     <ClInclude Include="CellBoard.h" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="ChessLMV.h" />
+    <ClInclude Include="Figure.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectInsertion.h" />
     <ClInclude Include="GameWindow.h" />
@@ -110,14 +94,9 @@
     <ClInclude Include="IntPoint.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextMenu.h" />
-    <ClInclude Include="WhiteBishop.h" />
-    <ClInclude Include="WhiteKing.h" />
-    <ClInclude Include="WhiteKnight.h" />
-    <ClInclude Include="WhitePawn.h" />
-    <ClInclude Include="WhiteQueen.h" />
-    <ClInclude Include="WhiteRook.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="LogFile.log" />
     <None Include="Resources\Background.png" />
     <None Include="Resources\BlackBishop.png" />
@@ -130,7 +109,6 @@
     <None Include="Resources\ChessBoard.png" />
     <None Include="Resources\ChessLMV.ini" />
     <None Include="Resources\OldStandardTTItalic.ttf" />
-    <None Include="Resources\UnknownFigure.png" />
     <None Include="Resources\WhiteBishop.png" />
     <None Include="Resources\WhiteKing.png" />
     <None Include="Resources\WhiteKnight.png" />

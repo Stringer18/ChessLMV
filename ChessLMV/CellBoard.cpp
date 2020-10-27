@@ -3,7 +3,7 @@
 
 // ----------------------------------------------------------------------------
 CellBoard::CellBoard( int iPositionX /*= 0*/, int iPositionY /*= 0*/,
-        GameObject* pFigure /*= nullptr*/ )
+        Figure* pFigure /*= nullptr*/ )
 {
     m_position.x = iPositionX;
     m_position.y = iPositionY;

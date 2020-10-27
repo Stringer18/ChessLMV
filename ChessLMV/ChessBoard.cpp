@@ -207,55 +207,55 @@ bool ChessBoard::prepareCellSelection()
 bool ChessBoard::prepareFigures()
 {
     int j = 0;
-    m_board[0][j].m_pFigure = new BlackRook( m_gameWindow,
+    m_board[0][j].m_pFigure = new Figure( m_gameWindow, true, _ROOK_,
             m_board[0][j].getPosition() );
-    m_board[7][j].m_pFigure = new BlackRook( m_gameWindow,
+    m_board[7][j].m_pFigure = new Figure( m_gameWindow, true, _ROOK_,
             m_board[7][j].getPosition() );
     
-    m_board[1][j].m_pFigure = new BlackKnight( m_gameWindow,
+    m_board[1][j].m_pFigure = new Figure( m_gameWindow, true, _KNIGHT_,
             m_board[1][j].getPosition() );
-    m_board[6][j].m_pFigure = new BlackKnight( m_gameWindow,
+    m_board[6][j].m_pFigure = new Figure( m_gameWindow, true, _KNIGHT_,
             m_board[6][j].getPosition() );
 
-    m_board[2][j].m_pFigure = new BlackBishop( m_gameWindow,
+    m_board[2][j].m_pFigure = new Figure( m_gameWindow, true, _BISHOP_,
             m_board[2][j].getPosition() );
-    m_board[5][j].m_pFigure = new BlackBishop( m_gameWindow,
+    m_board[5][j].m_pFigure = new Figure( m_gameWindow, true, _BISHOP_,
             m_board[5][j].getPosition() );
 
-    m_board[3][j].m_pFigure = new BlackQueen( m_gameWindow,
+    m_board[3][j].m_pFigure = new Figure( m_gameWindow, true, _QUEEN_,
             m_board[3][j].getPosition() );
 
-    m_board[4][j].m_pFigure = new BlackKing( m_gameWindow,
+    m_board[4][j].m_pFigure = new Figure( m_gameWindow, true, _KING_,
             m_board[4][j].getPosition() );
 
     for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
     {
-        m_board[i][1].m_pFigure = new BlackPawn( m_gameWindow,
+        m_board[i][1].m_pFigure = new Figure( m_gameWindow, true, _PAWN_,
                 m_board[i][1].getPosition() );
-        m_board[i][6].m_pFigure = new WhitePawn( m_gameWindow,
+        m_board[i][6].m_pFigure = new Figure( m_gameWindow, false, _PAWN_,
                 m_board[i][6].getPosition() );
     }
 
     j = 7;
-    m_board[0][j].m_pFigure = new WhiteRook( m_gameWindow,
+    m_board[0][j].m_pFigure = new Figure( m_gameWindow, false, _ROOK_,
             m_board[0][j].getPosition() );
-    m_board[7][j].m_pFigure = new WhiteRook( m_gameWindow,
+    m_board[7][j].m_pFigure = new Figure( m_gameWindow, false, _ROOK_,
             m_board[7][j].getPosition() );
     
-    m_board[1][j].m_pFigure = new WhiteKnight( m_gameWindow,
+    m_board[1][j].m_pFigure = new Figure( m_gameWindow, false,  _KNIGHT_,
             m_board[1][j].getPosition() );
-    m_board[6][j].m_pFigure = new WhiteKnight( m_gameWindow,
+    m_board[6][j].m_pFigure = new Figure( m_gameWindow, false,  _KNIGHT_,
             m_board[6][j].getPosition() );
 
-    m_board[2][j].m_pFigure = new WhiteBishop( m_gameWindow,
+    m_board[2][j].m_pFigure = new Figure( m_gameWindow, false, _BISHOP_,
             m_board[2][j].getPosition() );
-    m_board[5][j].m_pFigure = new WhiteBishop( m_gameWindow,
+    m_board[5][j].m_pFigure = new Figure( m_gameWindow, false, _BISHOP_,
             m_board[5][j].getPosition() );
 
-    m_board[3][j].m_pFigure = new WhiteQueen( m_gameWindow,
+    m_board[3][j].m_pFigure = new Figure( m_gameWindow, false, _QUEEN_,
             m_board[3][j].getPosition() );
 
-    m_board[4][j].m_pFigure = new WhiteKing( m_gameWindow,
+    m_board[4][j].m_pFigure = new Figure( m_gameWindow, false, _KING_,
             m_board[4][j].getPosition() );
 
     // Check figures.

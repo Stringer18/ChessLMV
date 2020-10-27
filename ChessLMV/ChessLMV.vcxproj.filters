@@ -13,24 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Заголовочные файлы\Figures">
-      <UniqueIdentifier>{ca6712ee-fb53-487b-a53c-1d6b6468df39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Заголовочные файлы\Figures\Black">
-      <UniqueIdentifier>{ea7657df-3de8-4a92-b65a-3d0481682346}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Заголовочные файлы\Figures\White">
-      <UniqueIdentifier>{c6905cfb-d4ea-4f3a-a5e8-2ca8c44702e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы исходного кода\Figures">
-      <UniqueIdentifier>{0eaa732e-174c-4bc5-844d-202e10f54da5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы исходного кода\Figures\Black">
-      <UniqueIdentifier>{237f0e7b-20f5-4d6f-bea7-406fa0f2e040}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы исходного кода\Figures\White">
-      <UniqueIdentifier>{cd0437bc-aadf-447e-9c1d-26abd4bd902f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Файлы ресурсов\Resources">
       <UniqueIdentifier>{04e9a21e-6b43-4451-bb0b-9cb6b882d147}</UniqueIdentifier>
     </Filter>
@@ -66,46 +48,13 @@
     <ClCompile Include="CellBoard.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="BlackBishop.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="BlackRook.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="BlackKing.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="BlackKnight.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="BlackPawn.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="BlackQueen.cpp">
-      <Filter>Файлы исходного кода\Figures\Black</Filter>
-    </ClCompile>
-    <ClCompile Include="WhiteBishop.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
-    <ClCompile Include="WhiteKing.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
-    <ClCompile Include="WhiteKnight.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
-    <ClCompile Include="WhitePawn.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
-    <ClCompile Include="WhiteQueen.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
-    <ClCompile Include="WhiteRook.cpp">
-      <Filter>Файлы исходного кода\Figures\White</Filter>
-    </ClCompile>
     <ClCompile Include="TextBox.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="TextMenu.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Figure.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,46 +86,13 @@
     <ClInclude Include="CellBoard.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="BlackBishop.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="BlackQueen.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="BlackKing.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="BlackKnight.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="BlackPawn.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="BlackRook.h">
-      <Filter>Заголовочные файлы\Figures\Black</Filter>
-    </ClInclude>
-    <ClInclude Include="WhiteBishop.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
-    <ClInclude Include="WhiteKing.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
-    <ClInclude Include="WhiteKnight.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
-    <ClInclude Include="WhitePawn.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
-    <ClInclude Include="WhiteQueen.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
-    <ClInclude Include="WhiteRook.h">
-      <Filter>Заголовочные файлы\Figures\White</Filter>
-    </ClInclude>
     <ClInclude Include="TextBox.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="TextMenu.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -232,11 +148,11 @@
     <None Include="Resources\OldStandardTTItalic.ttf">
       <Filter>Файлы ресурсов\Resources</Filter>
     </None>
-    <None Include="Resources\UnknownFigure.png">
-      <Filter>Файлы ресурсов\Resources\png</Filter>
-    </None>
     <None Include="Resources\CellSelection.png">
       <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>Файлы ресурсов</Filter>
     </None>
   </ItemGroup>
 </Project>
