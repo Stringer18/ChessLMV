@@ -1,19 +1,24 @@
 #pragma once
 
 #include <SDL.h>
+#include <math.h>
 
 #include "GameObjectInsertion.h"
 #include "GameWindow.h"
 #include "HelpFunctions.hpp"
 
 
-#define _PAWN_      0
-#define _ROOK_      1
-#define _KNIGHT_    2
-#define _BISHOP_    3
-#define _QUEEN_     4
-#define _KING_      5
+enum defineFigureType : int
+{
+    _PAWN_ = 0,
+    _ROOK_,
+    _KNIGHT_,
+    _BISHOP_,
+    _QUEEN_,
+    _KING_,
 
+    _FIGURE_TYPE_MAX_
+};
 
 // ----------------------------------------------------------------------------
 class Figure : public GameObjectInsertion
@@ -23,11 +28,27 @@ class Figure : public GameObjectInsertion
                 IntPoint position );
         ~Figure();
 
+        void setPosition( const IntPoint position );
+        void setPosition( int iX, int iY );
+
+        // --------------------------------------------------------------------
+        // Return:  Black -> true    White -> false
+        bool getColor();
+
+
+        // --------------------------------------------------------------------
+        // A wrapper for choosing which function to check the resolution of
+        // the trajectory of moving.
+        IntPoint checkTrajectory( IntPoint selectedIndex, IntPoint pushIndex,
+                Figure *pushFigure );
+
+
 
     // ------------------------------------------------------------------------
     protected:
         bool m_fIsBlackFigure;
         int m_iTypeFigure;
+        bool m_fIsMoved;
 
 
     // ------------------------------------------------------------------------
@@ -37,6 +58,21 @@ class Figure : public GameObjectInsertion
         // required item, it will return an empty string and assign
         // m_gameWindow->m_fIsSuccess = false.
         std::string selectStrTexture();
+
+        // --------------------------------------------------------------------
+        // These functions check if the moving path is allowed for a particular
+        // figure type. There is no function for the Queen because it is the
+        // sum of Rook and Bishop.
+        IntPoint checkTrajectoryPawn( IntPoint selectedIndex,
+                IntPoint pushIndex, Figure *pushFigure );
+        IntPoint checkTrajectoryRook( IntPoint selectedIndex,
+                IntPoint pushIndex );
+        IntPoint checkTrajectoryKnight( IntPoint selectedIndex,
+                IntPoint pushIndex );
+        IntPoint checkTrajectoryBishop( IntPoint selectedIndex,
+                IntPoint pushIndex );
+        IntPoint checkTrajectoryKing( IntPoint selectedIndex,
+                IntPoint pushIndex );
 };
 
 

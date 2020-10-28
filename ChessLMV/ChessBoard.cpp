@@ -17,6 +17,8 @@ ChessBoard::ChessBoard( GameWindow *pGameWindow ) :
             }
         }
     }
+    m_lastMoveFrom = IntPoint( -1, -1 );
+    m_lastMoveTo = IntPoint( -1, -1 );
 }
 
 
@@ -52,22 +54,22 @@ ChessBoard::~ChessBoard()
 void ChessBoard::pushAnalysis( IntPoint pushPoint )
 {
     IntPoint pushIndex = pushPointToCellPoint( pushPoint );
-    if( m_IndexCellSelection.x == -1 )
+    if( m_IndexCellSelection == IntPoint( -1, -1 ) )
     {
         // It's part, if figure didn`t select.
         // Next, check if we can select a figure in the clicked cell.
-        if( ( pushIndex.x > -1 ) && ( pushIndex.x < 8 ) && (
-                pushIndex.y > -1 ) && ( pushIndex.y < 8 ) && (
-                m_board[pushIndex.x][pushIndex.y].m_pFigure != nullptr ) )
+        if( ( pushIndex.x > -1 ) && ( pushIndex.x < 8 ) &&
+                ( pushIndex.y > -1 ) && ( pushIndex.y < 8 ) )
         {
-            // !!! Add check black/white figure !!!
-            // Select.
-            m_IndexCellSelection = pushIndex;
-            m_pCellSelection->setPosition( m_board[pushIndex.x][pushIndex.y].
-                    getPosition() );
-            m_gameWindow->addObjectForRenderer( m_pCellSelection );
-            // This "return" is't need, but with it it's clearer and calmer.
-            return; 
+            if( m_board[pushIndex.x][pushIndex.y].m_pFigure != nullptr )
+            {
+                if( m_board[pushIndex.x][pushIndex.y].m_pFigure->getColor() ==
+                    m_isBlackMove )
+                {
+                    selectFigure( pushIndex );
+                    return;
+                }
+            }
         }
     }
     else
@@ -75,28 +77,35 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
         // It's part, if figure selected.
         // Next, we check what to do with the selected figure - deselect or
         // make a move.
-        if( ( pushIndex.x > -1 ) || ( pushIndex.x < 8 ) || (
-                pushIndex.y > -1 ) || ( pushIndex.y < 8 ) || ( (
-                pushIndex.x != m_IndexCellSelection.x ) && (
-                pushIndex.y != m_IndexCellSelection.y ) ) )
+        if( ( pushIndex.x > -1 ) && ( pushIndex.x < 8 ) &&
+                ( pushIndex.y > -1 ) && ( pushIndex.y < 8 ) &&
+                 ( pushIndex != m_IndexCellSelection ) )
         {
-            // Move.
-            // !!! Do not attack other pieces yet, not yet implemented.
-            // !!! Will lead to memory leak.
-            m_board[pushIndex.x][pushIndex.y].m_pFigure =
-                    m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].
-                    m_pFigure;
-            m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure =
-                    nullptr;
-            m_board[pushIndex.x][pushIndex.y].m_pFigure->setPosition(
-                    m_board[pushIndex.x][pushIndex.y].getPosition() );
-        }
+            // ----------------------------------------------------------------
+            // This is where the standard movements are checked (and executed).
+            IntPoint moveVector = m_board[m_IndexCellSelection.x][
+                    m_IndexCellSelection.y].m_pFigure->checkTrajectory(
+                    m_IndexCellSelection, pushIndex,
+                    m_board[pushIndex.x][pushIndex.y].m_pFigure );
 
-        // Deselect.
-        m_gameWindow->deleteObjectFromRenderer( m_pCellSelection );
-        m_IndexCellSelection = IntPoint( -1, -1 );
-        m_pCellSelection->setPosition( m_sdlRect->x, m_sdlRect->y );
-        // This "return" is't need, but with it it's clearer and calmer.
+            if( moveVector != IntPoint( 0, 0 ) )
+            {
+                if( checkingMoveObstaclesFigure( pushIndex, moveVector ) )
+                {
+                    if( m_board[pushIndex.x][pushIndex.y].m_pFigure == nullptr)
+                    {
+                        moveFigure( pushIndex );
+                    }
+                    else
+                    {
+                        atackFigure( pushIndex );
+                    }
+                }
+            }
+
+            // ----------------------------------------------------------------
+        }
+        deselectFigure();
         return;
     }
 }
@@ -118,9 +127,111 @@ IntPoint ChessBoard::pushPointToCellPoint( IntPoint pushPoint )
 // ----------------------------------------------------------------------------
 void ChessBoard::changeActualMove()
 {
-    isBlackMove = !isBlackMove;
+    m_isBlackMove = !m_isBlackMove;
     m_pTextNowBlack->changeVisible();
     m_pTextNowWhite->changeVisible();
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::selectFigure( IntPoint pushIndex )
+{
+    m_IndexCellSelection = pushIndex;
+    m_pCellSelection->setPosition(
+            m_board[pushIndex.x][pushIndex.y].getPosition() );
+    m_gameWindow->addObjectForRenderer( m_pCellSelection );
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::deselectFigure()
+{
+    m_gameWindow->deleteObjectFromRenderer( m_pCellSelection );
+    m_IndexCellSelection = IntPoint( -1, -1 );
+    m_pCellSelection->setPosition( m_sdlRect->x, m_sdlRect->y );
+}
+
+
+
+// ----------------------------------------------------------------------------
+bool ChessBoard::checkingMoveObstaclesFigure( IntPoint finishIndex,
+        IntPoint moveVector )
+{
+    if( m_IndexCellSelection == IntPoint( -1, -1 ) )
+    {
+        setToLog( "Cannot check moving of figure. It is not selected." );
+        return false;
+    }
+    if( moveVector == IntPoint( 0, 0 ) )
+    {
+        setToLog( "Cannot check moving of figure. moveVector == ( 0, 0 )." );
+        return false;
+    }
+
+    // If moveVector turns out to be incorrect, then this
+    // type of cycle will limit the number of checks in accordance
+    // with the size of the board.
+    IntPoint focusIndex = m_IndexCellSelection.plusPoint( moveVector );
+    for( int i = 1 ; i < _BOARD_SIZE_ ; i++ )
+    {
+        if( focusIndex == finishIndex )
+        {
+            return true;
+        }
+        if( m_board[focusIndex.x][focusIndex.y].m_pFigure != nullptr )
+        {
+            return false;
+        }
+        focusIndex = focusIndex.plusPoint( moveVector );
+    }
+    
+    // If we got here, then moveVector turned out to be wrong.
+    setToLog( "Incorrect moveVector." );
+    return false;
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::moveFigure( IntPoint pushIndex )
+{
+    if( m_IndexCellSelection == IntPoint( -1, -1 ) )
+    {
+        setToLog( "Cannot move figure. It is not selected." );
+        return;
+    }
+    m_lastMoveFrom = m_IndexCellSelection;
+    m_lastMoveTo = pushIndex;
+    m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure =
+            m_board[m_lastMoveFrom.x][m_lastMoveFrom.y].
+            m_pFigure;
+    m_board[m_lastMoveFrom.x][m_lastMoveFrom.y].m_pFigure =
+            nullptr;
+    m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->setPosition(
+            m_board[m_lastMoveTo.x][m_lastMoveTo.y].getPosition() );
+    changeActualMove();
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::atackFigure( IntPoint atackIndex )
+{
+    if( m_IndexCellSelection == IntPoint( -1, -1 ) )
+    {
+        setToLog( "Impossible to attack. Selection is empty." );
+        return;
+    }
+    if( m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure->
+            getColor() == m_board[atackIndex.x][atackIndex.y].m_pFigure->
+            getColor() )
+    {
+        return;
+    }
+    delete m_board[atackIndex.x][atackIndex.y].m_pFigure;
+    moveFigure( atackIndex );
 }
 
 
@@ -280,7 +391,7 @@ bool ChessBoard::prepareFigures()
 // ----------------------------------------------------------------------------
 bool ChessBoard::prepareText()
 {
-    isBlackMove = false;
+    m_isBlackMove = false;
 
     int iTextPositionX = 0;
     int iTextPositionY = 0;
@@ -292,10 +403,10 @@ bool ChessBoard::prepareText()
             
     m_pTextNowBlack = new TextBox( m_gameWindow, "Now move: Black",
             IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
-            isBlackMove );
+            m_isBlackMove );
     m_pTextNowWhite = new TextBox( m_gameWindow, "Now move: White",
             IntPoint( iTextPositionX, iTextPositionY ), iTextWidthSize,
-            !isBlackMove );
+            !m_isBlackMove );
     if( ( !( m_pTextNowBlack->isValid() ) ) || ( !( m_pTextNowWhite->isValid() ) ) )
     {
         setToLog( "Cannot create text section for board." );

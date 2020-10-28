@@ -38,8 +38,21 @@ class ChessBoard : public GameObjectInsertion
         // past the cells.
         IntPoint pushPointToCellPoint( IntPoint pushPoint );
 
+
+        // --------------------------------------------------------------------
         // Change the current player (pass the move).
         void changeActualMove();
+
+
+        // --------------------------------------------------------------------
+        void selectFigure( IntPoint pushIndex );
+        void deselectFigure();
+
+        // We perform attack or move actions only with a selected figure.
+        bool checkingMoveObstaclesFigure( IntPoint finishIndex,
+                IntPoint moveVector );
+        void moveFigure( IntPoint pushIndex );
+        void atackFigure( IntPoint atackIndex );
 
 
         // --------------------------------------------------------------------
@@ -47,7 +60,7 @@ class ChessBoard : public GameObjectInsertion
         int m_iStepX, m_iStepY; // The step (size) of the squares of the board.
 
         // Whose turn is stored here. True - black, false - white.
-        bool isBlackMove;
+        bool m_isBlackMove;
         TextBox *m_pTextNowBlack;
         TextBox *m_pTextNowWhite;
 
@@ -57,6 +70,11 @@ class ChessBoard : public GameObjectInsertion
         // ( m_pCellSelection ) visible or no.
         IntPoint m_IndexCellSelection;
         GameObject *m_pCellSelection;
+
+        // These two variables are needed only so that we can check the
+        // "take on the pass".
+        IntPoint m_lastMoveFrom;
+        IntPoint m_lastMoveTo;
 
 
     // ------------------------------------------------------------------------

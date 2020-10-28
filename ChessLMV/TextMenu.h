@@ -3,10 +3,16 @@
 #include "GameWindow.h"
 #include "TextBox.h"
 
+
 // Defines for iCommandStore:
-#define _NO_COMMAND_    0
-#define _NEW_GAME_      1
-#define _EXIT_          2
+enum defineCommandTextMenu : int
+{
+    _NO_COMMAND_ = 0,
+    _NEW_GAME_,
+    _EXIT_,
+
+    _COMMAND_TEXT_MENU_MAX_
+};
 
 
 // ----------------------------------------------------------------------------
