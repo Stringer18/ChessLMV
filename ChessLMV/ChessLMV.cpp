@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     }
 
     delElements( &pBackground, &pChessBoard, &pTextMenu );
-    setToLog( "Exit.\n\n" );
+    setToLog( "End program.\n\n" );
     //getchar();
     return 0;
 }
@@ -83,6 +83,7 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
         {
             case SDL_QUIT:
             {
+                setToLog( "Push to exit game." );
                 pGameWindow->m_fIsSuccess = false;
                 return; // break;
             }
@@ -117,6 +118,7 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
                         }
                         case _EXIT_:
                         {
+                            setToLog( "Push to exit game." );
                             pGameWindow->m_fIsSuccess = false;
                             break;
                         }

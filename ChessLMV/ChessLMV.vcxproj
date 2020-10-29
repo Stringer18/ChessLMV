@@ -103,6 +103,7 @@
     <None Include="Resources\BlackKing.png" />
     <None Include="Resources\BlackKnight.png" />
     <None Include="Resources\BlackPawn.png" />
+    <None Include="Resources\BlackPawnPromotion.png" />
     <None Include="Resources\BlackQueen.png" />
     <None Include="Resources\BlackRook.png" />
     <None Include="Resources\CellSelection.png" />

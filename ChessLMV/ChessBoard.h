@@ -27,8 +27,10 @@ class ChessBoard : public GameObjectInsertion
         // to the board.
         void pushAnalysis( IntPoint pushPoint );
 
- //       bool addFigure( int iIndexX, int iIndexY, GameObject *pFigure);
- //       void delFigure( int iIndexX, int iIndexY );
+
+        // --------------------------------------------------------------------
+        bool isOnBoardIndex( IntPoint checkIndex );
+
 
     // ------------------------------------------------------------------------
     protected:
@@ -56,14 +58,28 @@ class ChessBoard : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
+        // There are special rules
+
+        // Promotion of a pawn on the 8th line of the board.
+        void pawnPromotion( IntPoint pushIndex );
+
+        // "Taking on the pass". Attacking the opponent's pawn with his pawn
+        // after it has moved 2 cells.
+        void pawnTakingPass( IntPoint pushIndex );
+
+
+        // --------------------------------------------------------------------
         CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
         int m_iStepX, m_iStepY; // The step (size) of the squares of the board.
 
+        // --------------------------------------------------------------------
         // Whose turn is stored here. True - black, false - white.
         bool m_isBlackMove;
         TextBox *m_pTextNowBlack;
         TextBox *m_pTextNowWhite;
 
+
+        // --------------------------------------------------------------------
         // The index of the selected cell is stored here 
         // ( m_IndexCellSelection ). When no cell is selected, then the value
         // is == (-1, -1). It is indicator for know, is selection
@@ -71,8 +87,22 @@ class ChessBoard : public GameObjectInsertion
         IntPoint m_IndexCellSelection;
         GameObject *m_pCellSelection;
 
+
+        // --------------------------------------------------------------------
+        // If this flag is up, it means that some pawn has reached the 8th line
+        // and a special rule is activated - "pawn promotion". All clicks on
+        // the board are ignored until a selection is made of a figure to
+        // transform.
+        bool m_fIsPawnPromotionActive;
+        int iIndexXStartSelectionPawnPromotion;
+        TextBox *m_pTextChangePawn;
+        GameObject *m_pBlackPawnPromotion;
+        GameObject *m_pWhitePawnPromotion;
+
+
+        // --------------------------------------------------------------------
         // These two variables are needed only so that we can check the
-        // "take on the pass".
+        // "taking on the pass".
         IntPoint m_lastMoveFrom;
         IntPoint m_lastMoveTo;
 
@@ -87,7 +117,8 @@ class ChessBoard : public GameObjectInsertion
         void prepareGridBoard();
         bool prepareCellSelection();
         bool prepareFigures();
-        bool prepareText(); 
+        bool prepareText();
+        bool preparePawnPromotion();
 };
 
 

@@ -37,6 +37,10 @@ class Figure : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
+        int getType();
+
+
+        // --------------------------------------------------------------------
         // A wrapper for choosing which function to check the resolution of
         // the trajectory of moving.
         IntPoint checkTrajectory( IntPoint selectedIndex, IntPoint pushIndex,

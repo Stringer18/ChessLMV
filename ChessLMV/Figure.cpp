@@ -60,7 +60,7 @@ void Figure::setPosition( int iX, int iY )
 
 // ----------------------------------------------------------------------------
 bool Figure::getColor() { return m_fIsBlackFigure; }
-
+int Figure::getType() { return m_iTypeFigure; }
 
 
 // ----------------------------------------------------------------------------
