@@ -128,9 +128,7 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
                             (*ppChessBoard)->toHelp( std::string( "The " ) +
                                     "game is over. Please choose next action" +
                                     " - new game or exit." );
-                            (*ppTextMenu)->getTextDraw()->changeVisible();
-                            (*ppTextMenu)->getTextCapitulation()->
-                                    changeVisible();
+                            (*ppTextMenu)->NewGameOrExitMode();
                             (*ppChessBoard)->gameOver( _GO_DRAW_ );
                             break;
                         }
@@ -140,9 +138,7 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
                             (*ppChessBoard)->toHelp( std::string( "The " ) +
                                     "game is over. Please choose next action" +
                                     " - new game or exit." );
-                            (*ppTextMenu)->getTextDraw()->changeVisible();
-                            (*ppTextMenu)->getTextCapitulation()->
-                                    changeVisible();
+                            (*ppTextMenu)->NewGameOrExitMode();
                             (*ppChessBoard)->gameOver( _GO_CAPITULATION_ );
 
                             break;

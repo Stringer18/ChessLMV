@@ -43,8 +43,9 @@ class TextMenu : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
-        TextBox* getTextDraw();
-        TextBox* getTextCapitulation();
+        // A special mode for the moment after the end of the game. When you
+        // need to choose - either start a new game, or exit.
+        void NewGameOrExitMode();
 
 
     // ------------------------------------------------------------------------
@@ -69,5 +70,8 @@ class TextMenu : public GameObjectInsertion
 
         // Remembers here which command was selected (in the menu) to wait
         // for confirmation.
-        int iCommandStore;
+        int m_iCommandStore;
+
+        bool m_fIsNewGameOrExitMode;
+
 };

@@ -5,7 +5,8 @@
 TextMenu::TextMenu( GameWindow *pGameWindow ) :
         GameObjectInsertion( pGameWindow )
 {
-    iCommandStore = _NO_COMMAND_;
+    m_iCommandStore = _NO_COMMAND_;
+    m_fIsNewGameOrExitMode = false;
 
     int iButtonPositionX = 0;
     int iButtonPositionY = 0;
@@ -98,15 +99,17 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
     {
         if( checkPushButton( pTextYes, pushPoint ) )
         {
-            int ibuffCommand = iCommandStore;
-            iCommandStore = _NO_COMMAND_;
-            returnMenu();
+            int ibuffCommand = m_iCommandStore;
+            m_iCommandStore = _NO_COMMAND_;
+            if( m_fIsNewGameOrExitMode ) { NewGameOrExitMode(); }
+            else { returnMenu(); }
             return ibuffCommand;
         }
         if( checkPushButton( pTextNo, pushPoint ) )
         {
-            iCommandStore = _NO_COMMAND_;
-            returnMenu();
+            m_iCommandStore = _NO_COMMAND_;
+            if( m_fIsNewGameOrExitMode ) { NewGameOrExitMode(); }
+            else { returnMenu(); }
             return _NO_COMMAND_;
         }
     }
@@ -168,9 +171,17 @@ void TextMenu::returnMenu()
 
 
 // ----------------------------------------------------------------------------
-TextBox* TextMenu::getTextDraw() { return pTextDraw; }
-TextBox* TextMenu::getTextCapitulation() { return pTextCapitulation; }
-
+void TextMenu::NewGameOrExitMode()
+{
+    m_fIsNewGameOrExitMode = true;
+    if( !pTextNewGame->getIsVisible() ) { pTextNewGame->changeVisible(); }
+    if( pTextDraw->getIsVisible() ) { pTextDraw->changeVisible(); }
+    if( pTextCapitulation->getIsVisible() )
+            { pTextCapitulation->changeVisible(); }
+    if( !pTextExit->getIsVisible() ) { pTextExit->changeVisible(); }
+    if( pTextYes->getIsVisible() ) { pTextYes->changeVisible(); }
+    if( pTextNo->getIsVisible() ) { pTextNo->changeVisible(); }
+}
 
 
 
@@ -197,7 +208,7 @@ void TextMenu::confirmation( int iVisibleButton )
     {
         return;
     }
-    iCommandStore = iVisibleButton;
+    m_iCommandStore = iVisibleButton;
     hideMenu();
     switch( iVisibleButton )
     {
