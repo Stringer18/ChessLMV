@@ -108,12 +108,43 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
                             IntPoint( sdlEvent.button.x, sdlEvent.button.y ) );
                     switch( iResultAnalysis )
                     {
+                        case _NO_COMMAND_:
+                        {
+                            (*ppChessBoard)->boardPause();
+                            break;
+                        }
                         case _NEW_GAME_:
                         {
+                            setToLog( "Push new game." );
                             delElements( ppBackground, ppChessBoard,
                                     ppTextMenu );
                             prepareElements( pGameWindow, ppBackground,
                                     ppChessBoard, ppTextMenu );
+                            break;
+                        }
+                        case _DRAW_:
+                        {
+                            setToLog( "Push draw." );
+                            (*ppChessBoard)->toHelp( std::string( "The " ) +
+                                    "game is over. Please choose next action" +
+                                    " - new game or exit." );
+                            (*ppTextMenu)->getTextDraw()->changeVisible();
+                            (*ppTextMenu)->getTextCapitulation()->
+                                    changeVisible();
+                            (*ppChessBoard)->gameOver( _GO_DRAW_ );
+                            break;
+                        }
+                        case _CAPITULATION_:
+                        {
+                            setToLog( "Push capitulation." );
+                            (*ppChessBoard)->toHelp( std::string( "The " ) +
+                                    "game is over. Please choose next action" +
+                                    " - new game or exit." );
+                            (*ppTextMenu)->getTextDraw()->changeVisible();
+                            (*ppTextMenu)->getTextCapitulation()->
+                                    changeVisible();
+                            (*ppChessBoard)->gameOver( _GO_CAPITULATION_ );
+
                             break;
                         }
                         case _EXIT_:

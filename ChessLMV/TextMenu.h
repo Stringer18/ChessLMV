@@ -9,6 +9,8 @@ enum defineCommandTextMenu : int
 {
     _NO_COMMAND_ = 0,
     _NEW_GAME_,
+    _DRAW_,
+    _CAPITULATION_,
     _EXIT_,
 
     _COMMAND_TEXT_MENU_MAX_
@@ -30,12 +32,37 @@ class TextMenu : public GameObjectInsertion
         int pushAnalysis( IntPoint pushPoint );
 
 
+        // --------------------------------------------------------------------
+        // Hide all buttons on menu.
+        void hideMenu();
+
+
+        // --------------------------------------------------------------------
+        // Returns all menu buttons except "Yes" and "No".
+        void returnMenu();
+
+
+        // --------------------------------------------------------------------
+        TextBox* getTextDraw();
+        TextBox* getTextCapitulation();
+
+
     // ------------------------------------------------------------------------
     protected:
         // Checks if a specific button in menu has been pressed.
         bool checkPushButton( TextBox * pButton, IntPoint pushPoint );
 
+
+        // --------------------------------------------------------------------
+        // Hides all buttons, and then displays the pressed one,
+        // "Yes" and "No".
+        void confirmation( int iVisibleButton );
+
+
+        // --------------------------------------------------------------------
         TextBox *pTextNewGame;
+        TextBox *pTextDraw;
+        TextBox *pTextCapitulation;
         TextBox *pTextExit;
         TextBox *pTextYes;
         TextBox *pTextNo;

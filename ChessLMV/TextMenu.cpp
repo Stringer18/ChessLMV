@@ -29,6 +29,24 @@ TextMenu::TextMenu( GameWindow *pGameWindow ) :
     
     // ------------------------------------------------------------------------
     iButtonPositionY += pTextNewGame->getSize().y + iButtonStep;
+    pTextDraw = new TextBox( pGameWindow, "Draw", IntPoint(
+            iButtonPositionX, iButtonPositionY ), iButtonWidthSize, true );
+    if( m_sdlRect->w < pTextDraw->getSize().x )
+    {
+        m_sdlRect->w = pTextDraw->getSize().x;
+    }
+
+    // ------------------------------------------------------------------------
+    iButtonPositionY += pTextNewGame->getSize().y + iButtonStep;
+    pTextCapitulation = new TextBox( pGameWindow, "Capitulation", IntPoint(
+            iButtonPositionX, iButtonPositionY ), iButtonWidthSize, true );
+    if( m_sdlRect->w < pTextCapitulation->getSize().x )
+    {
+        m_sdlRect->w = pTextCapitulation->getSize().x;
+    }
+
+    // ------------------------------------------------------------------------
+    iButtonPositionY += pTextNewGame->getSize().y + iButtonStep;
     pTextExit = new TextBox( pGameWindow, "Exit", IntPoint(
             iButtonPositionX, iButtonPositionY ), iButtonWidthSize, true );
     if( m_sdlRect->w < pTextExit->getSize().x )
@@ -64,6 +82,8 @@ TextMenu::TextMenu( GameWindow *pGameWindow ) :
 TextMenu::~TextMenu()
 {
     if( pTextNewGame != nullptr ) { delete pTextNewGame; }
+    if( pTextDraw != nullptr ) { delete pTextDraw; }
+    if( pTextCapitulation != nullptr ) { delete pTextCapitulation; }
     if( pTextExit != nullptr ) { delete pTextExit; }
     if( pTextYes != nullptr ) { delete pTextYes; }
     if( pTextNo != nullptr ) { delete pTextNo; }
@@ -80,23 +100,13 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
         {
             int ibuffCommand = iCommandStore;
             iCommandStore = _NO_COMMAND_;
-            pTextYes->changeVisible();
-            pTextNo->changeVisible();
+            returnMenu();
             return ibuffCommand;
         }
         if( checkPushButton( pTextNo, pushPoint ) )
         {
             iCommandStore = _NO_COMMAND_;
-            if( !( pTextNewGame->getIsVisible() ) )
-            {
-                pTextNewGame->changeVisible();
-            }
-            if( !( pTextExit->getIsVisible() ) )
-            {
-                pTextExit->changeVisible();
-            }
-            pTextYes->changeVisible();
-            pTextNo->changeVisible();
+            returnMenu();
             return _NO_COMMAND_;
         }
     }
@@ -104,23 +114,63 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
     {
         if( checkPushButton( pTextNewGame, pushPoint ) )
         {
-            iCommandStore = _NEW_GAME_;
-            pTextExit->changeVisible();
-            pTextYes->changeVisible();
-            pTextNo->changeVisible();
+            confirmation( _NEW_GAME_ );
+            return _NO_COMMAND_;
+        }
+        if( checkPushButton( pTextDraw, pushPoint ) )
+        {
+            confirmation( _DRAW_ );
+            return _NO_COMMAND_;
+        }
+        if( checkPushButton( pTextCapitulation, pushPoint ) )
+        {
+            confirmation( _CAPITULATION_ );
             return _NO_COMMAND_;
         }
         if( checkPushButton( pTextExit, pushPoint ) )
         {
-            iCommandStore = _EXIT_;
-            pTextNewGame->changeVisible();
-            pTextYes->changeVisible();
-            pTextNo->changeVisible();
+            confirmation( _EXIT_ );
             return _NO_COMMAND_;
         }
     }
     return _NO_COMMAND_;
 }
+
+
+
+// ----------------------------------------------------------------------------
+void TextMenu::hideMenu()
+{
+    if( pTextNewGame->getIsVisible() ) { pTextNewGame->changeVisible(); }
+    if( pTextDraw->getIsVisible() ) { pTextDraw->changeVisible(); }
+    if( pTextCapitulation->getIsVisible() )
+            { pTextCapitulation->changeVisible(); }
+    if( pTextExit->getIsVisible() ) { pTextExit->changeVisible(); }
+    if( pTextYes->getIsVisible() ) { pTextYes->changeVisible(); }
+    if( pTextNo->getIsVisible() ) { pTextNo->changeVisible(); }
+}
+
+
+
+// ----------------------------------------------------------------------------
+void TextMenu::returnMenu()
+{
+    if( !pTextNewGame->getIsVisible() ) { pTextNewGame->changeVisible(); }
+    if( !pTextDraw->getIsVisible() ) { pTextDraw->changeVisible(); }
+    if( !pTextCapitulation->getIsVisible() )
+            { pTextCapitulation->changeVisible(); }
+    if( !pTextExit->getIsVisible() ) { pTextExit->changeVisible(); }
+    if( pTextYes->getIsVisible() ) { pTextYes->changeVisible(); }
+    if( pTextNo->getIsVisible() ) { pTextNo->changeVisible(); }
+}
+
+
+
+
+// ----------------------------------------------------------------------------
+TextBox* TextMenu::getTextDraw() { return pTextDraw; }
+TextBox* TextMenu::getTextCapitulation() { return pTextCapitulation; }
+
 
 
 
@@ -135,6 +185,57 @@ bool TextMenu::checkPushButton( TextBox *pButton, IntPoint pushPoint )
             pushPoint.x <= buffPoint.x + buffSize.x ) && (
             pushPoint.y >= buffPoint.y ) && (
             pushPoint.y <= buffPoint.y + buffSize.y ) );
+}
+
+
+
+// ----------------------------------------------------------------------------
+void TextMenu::confirmation( int iVisibleButton )
+{
+    if( ( iVisibleButton <= _NO_COMMAND_ ) ||
+            ( iVisibleButton >= _COMMAND_TEXT_MENU_MAX_ ) )
+    {
+        return;
+    }
+    iCommandStore = iVisibleButton;
+    hideMenu();
+    switch( iVisibleButton )
+    {
+        case _NEW_GAME_:
+        {
+            if( !pTextNewGame->getIsVisible() ) 
+            {
+                pTextNewGame->changeVisible();
+            }
+            break;
+        }
+        case _DRAW_:
+        {
+            if( !pTextDraw->getIsVisible() ) 
+            {
+                pTextDraw->changeVisible();
+            }
+            break;
+        }
+        case _CAPITULATION_:
+        {
+            if( !pTextCapitulation->getIsVisible() ) 
+            {
+                pTextCapitulation->changeVisible();
+            }
+            break;
+        }
+        case _EXIT_:
+        {
+            if( !pTextExit->getIsVisible() ) 
+            {
+                pTextExit->changeVisible();
+            }
+            break;
+        }
+    }
+    if( !pTextYes->getIsVisible() ) { pTextYes->changeVisible(); }
+    if( !pTextNo->getIsVisible() ) { pTextNo->changeVisible(); }
 }
 
 

@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <math.h>
+//#include <map>
 
 #include "GameObjectInsertion.h"
 #include "GameWindow.h"
@@ -12,6 +13,16 @@
 
 
 #define _BOARD_SIZE_    8
+
+// Defines types of game over. Last player:
+enum defineGameOverType : int
+{
+    _GO_WIN_ = 0,
+    _GO_DRAW_,
+    _GO_CAPITULATION_,
+
+    _GO_MAX_
+};
 
 // ----------------------------------------------------------------------------
 class ChessBoard : public GameObjectInsertion
@@ -29,7 +40,23 @@ class ChessBoard : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
+        // Checks if the cell with the specified index is on the board.
         bool isOnBoardIndex( IntPoint checkIndex );
+
+
+        // --------------------------------------------------------------------
+        // Displays text in the help area (m_pTextHelp).
+        void toHelp( std::string strHelp );
+
+
+        // --------------------------------------------------------------------
+        // 
+        void gameOver( int iType );
+
+
+        // --------------------------------------------------------------------
+        // 
+        void boardPause();
 
 
     // ------------------------------------------------------------------------
@@ -60,14 +87,14 @@ class ChessBoard : public GameObjectInsertion
         // There are special rules
 
         // Promotion of a pawn on the 8th line of the board.
-        void pawnPromotion( IntPoint pushIndex );
+        bool pawnPromotion( IntPoint pushIndex );
 
         // "Taking on the pass". Attacking the opponent's pawn with his pawn
         // after it has moved 2 cells.
-        void pawnTakingPass( IntPoint pushIndex );
+        bool pawnTakingPass( IntPoint pushIndex );
 
         // Check the castling and do it if it can.
-        void kingCastling( IntPoint pushIndex );
+        bool kingCastling( IntPoint pushIndex );
 
 
         // --------------------------------------------------------------------
@@ -126,6 +153,28 @@ class ChessBoard : public GameObjectInsertion
         IntPoint m_lastMoveTo;
 
 
+        // --------------------------------------------------------------------
+        // Unlike the rest of the text elements (in this game), this texture
+        // cannot be prepared in advance. Then, at the stage of preparation,
+        // m_pTextHelp will only be initialized (nullptr), and the texture
+        // itself will be created and deleted as data arrives.
+        TextBox *m_pTextHelp;
+        IntPoint m_helpPosition;
+        int m_iHelpMaxWidth;
+        int m_iHelpFontSize;
+
+
+        // --------------------------------------------------------------------
+        bool m_fIsPauseBoard;
+
+
+        // --------------------------------------------------------------------
+        TextBox *m_pTextGameOver;
+
+        // --------------------------------------------------------------------
+        // 
+        //std::map <std::string, int> m_mapRepeatPosition;
+
     // ------------------------------------------------------------------------
     private:
         // This function block prepares different elements of the board (board,
@@ -138,6 +187,7 @@ class ChessBoard : public GameObjectInsertion
         bool prepareFigures();
         bool prepareText();
         bool preparePawnPromotion();
+        void prepareHelp();
 };
 
 
