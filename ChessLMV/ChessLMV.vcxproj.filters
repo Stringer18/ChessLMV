@@ -157,5 +157,8 @@
     <None Include="Resources\BlackPawnPromotion.png">
       <Filter>Файлы ресурсов\Resources\png</Filter>
     </None>
+    <None Include="Resources\WhitePawnPromotion.png">
+      <Filter>Файлы ресурсов\Resources\png</Filter>
+    </None>
   </ItemGroup>
 </Project>

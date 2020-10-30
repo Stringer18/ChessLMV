@@ -35,10 +35,8 @@ class Figure : public GameObjectInsertion
         // Return:  Black -> true    White -> false
         bool getColor();
 
-
-        // --------------------------------------------------------------------
         int getType();
-
+        bool getIsMoved();
 
         // --------------------------------------------------------------------
         // A wrapper for choosing which function to check the resolution of

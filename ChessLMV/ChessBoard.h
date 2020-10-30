@@ -51,8 +51,7 @@ class ChessBoard : public GameObjectInsertion
         void deselectFigure();
 
         // We perform attack or move actions only with a selected figure.
-        bool checkingMoveObstaclesFigure( IntPoint finishIndex,
-                IntPoint moveVector );
+        bool checkMoveFigure( IntPoint selectIndex, IntPoint finishIndex );
         void moveFigure( IntPoint pushIndex );
         void atackFigure( IntPoint atackIndex );
 
@@ -67,10 +66,30 @@ class ChessBoard : public GameObjectInsertion
         // after it has moved 2 cells.
         void pawnTakingPass( IntPoint pushIndex );
 
+        // Check the castling and do it if it can.
+        void kingCastling( IntPoint pushIndex );
+
+
+        // --------------------------------------------------------------------
+        // Checks if the king is in check if he is standing in the checked
+        // cell. If return true - danger.
+        bool checkCheck( IntPoint checkIndex );
+
+
+        // --------------------------------------------------------------------
+        // Checks if the king is in check.
+        bool checkCheckKing();
+
+
+        // --------------------------------------------------------------------
+        // Finds the king and returns the index of the square where it stands.
+        IntPoint findKing();
+
 
         // --------------------------------------------------------------------
         CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
         int m_iStepX, m_iStepY; // The step (size) of the squares of the board.
+
 
         // --------------------------------------------------------------------
         // Whose turn is stored here. True - black, false - white.

@@ -78,8 +78,7 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
     {
         // It's part, if figure didn`t select.
         // Next, check if we can select a figure in the clicked cell.
-        if( ( pushIndex.x > -1 ) && ( pushIndex.x < _BOARD_SIZE_ ) &&
-                ( pushIndex.y > -1 ) && ( pushIndex.y < _BOARD_SIZE_ ) )
+        if( isOnBoardIndex( pushIndex ) )
         {
             if( m_board[pushIndex.x][pushIndex.y].m_pFigure != nullptr )
             {
@@ -97,37 +96,27 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
         // It's part, if figure selected.
         // Next, we check what to do with the selected figure - deselect or
         // make a move.
-        if( ( pushIndex.x > -1 ) && ( pushIndex.x < _BOARD_SIZE_ ) &&
-                ( pushIndex.y > -1 ) && ( pushIndex.y < _BOARD_SIZE_ ) &&
-                 ( pushIndex != m_IndexCellSelection ) )
+        if( isOnBoardIndex( pushIndex ) && ( pushIndex != m_IndexCellSelection ) )
         {
             // ----------------------------------------------------------------
             // This is where the standard movements are checked (and executed).
-            IntPoint moveVector = m_board[m_IndexCellSelection.x][
-                    m_IndexCellSelection.y].m_pFigure->checkTrajectory(
-                    m_IndexCellSelection, pushIndex,
-                    m_board[pushIndex.x][pushIndex.y].m_pFigure );
-
-            if( moveVector != IntPoint( 0, 0 ) )
+            if( checkMoveFigure( m_IndexCellSelection, pushIndex ) )
             {
-                if( checkingMoveObstaclesFigure( pushIndex, moveVector ) )
+                if( m_board[pushIndex.x][pushIndex.y].m_pFigure == nullptr)
                 {
-                    if( m_board[pushIndex.x][pushIndex.y].m_pFigure == nullptr)
-                    {
-                        moveFigure( pushIndex );
-                    }
-                    else
-                    {
-                        atackFigure( pushIndex );
-                    }
-                    // Checking the first special rule.
-                    pawnPromotion( pushIndex );
+                    moveFigure( pushIndex );
+                }
+                else
+                {
+                    atackFigure( pushIndex );
                 }
             }
 
             // ----------------------------------------------------------------
-            // Checking the second special rule.
+            // Checking special rules.
+            pawnPromotion( pushIndex );
             pawnTakingPass( pushIndex );
+            kingCastling( pushIndex );
         }
         if( !m_fIsPawnPromotionActive ) { deselectFigure(); }
         return;
@@ -189,27 +178,30 @@ void ChessBoard::deselectFigure()
 
 
 // ----------------------------------------------------------------------------
-bool ChessBoard::checkingMoveObstaclesFigure( IntPoint finishIndex,
-        IntPoint moveVector )
+bool ChessBoard::checkMoveFigure( IntPoint selectIndex, IntPoint pushIndex )
 {
-    if( m_IndexCellSelection == IntPoint( -1, -1 ) )
+    if( !isOnBoardIndex( selectIndex ) || !isOnBoardIndex( pushIndex ) ||
+            ( selectIndex == pushIndex ) )
     {
-        setToLog( "Cannot check moving of figure. It is not selected." );
         return false;
     }
+
+    IntPoint moveVector = m_board[selectIndex.x][selectIndex.y].m_pFigure->
+            checkTrajectory( selectIndex, pushIndex,
+            m_board[pushIndex.x][pushIndex.y].m_pFigure );
+
     if( moveVector == IntPoint( 0, 0 ) )
     {
-        setToLog( "Cannot check moving of figure. moveVector == ( 0, 0 )." );
         return false;
     }
 
     // If moveVector turns out to be incorrect, then this
     // type of cycle will limit the number of checks in accordance
     // with the size of the board.
-    IntPoint focusIndex = m_IndexCellSelection.plusPoint( moveVector );
+    IntPoint focusIndex = selectIndex.plusPoint( moveVector );
     for( int i = 1 ; i < _BOARD_SIZE_ ; i++ )
     {
-        if( focusIndex == finishIndex )
+        if( focusIndex == pushIndex )
         {
             return true;
         }
@@ -233,6 +225,7 @@ void ChessBoard::moveFigure( IntPoint pushIndex )
     if( m_IndexCellSelection == IntPoint( -1, -1 ) )
     {
         setToLog( "Cannot move figure. It is not selected." );
+        m_gameWindow->m_fIsSuccess = false;
         return;
     }
     m_lastMoveFrom = m_IndexCellSelection;
@@ -255,6 +248,7 @@ void ChessBoard::atackFigure( IntPoint atackIndex )
     if( m_IndexCellSelection == IntPoint( -1, -1 ) )
     {
         setToLog( "Impossible to attack. Selection is empty." );
+        m_gameWindow->m_fIsSuccess = false;
         return;
     }
     if( m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure->
@@ -278,8 +272,7 @@ void ChessBoard::atackFigure( IntPoint atackIndex )
 void ChessBoard::pawnPromotion( IntPoint pushIndex )
 {
     // Two-step protection against accidental errors due to incorrect data.
-    if( ( m_lastMoveTo.x < 0 ) || ( m_lastMoveTo.x >= _BOARD_SIZE_ ) || 
-            ( m_lastMoveTo.y < 0 ) || ( m_lastMoveTo.y >= _BOARD_SIZE_ ) )
+    if( !( isOnBoardIndex( m_lastMoveTo ) ) )
     {
         return;
     }
@@ -386,6 +379,141 @@ void ChessBoard::pawnTakingPass( IntPoint pushIndex )
         m_lastMoveFrom = startAtack;
         changeActualMove();
     }
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::kingCastling( IntPoint pushIndex )
+{
+    if( ( !isOnBoardIndex( m_IndexCellSelection ) ) ||
+            ( !isOnBoardIndex( pushIndex ) ) )
+    {
+        return;
+    }
+
+    Figure *pKing =
+            m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure;
+    if( pKing == nullptr ) { return; }
+
+    if( ( pKing->getType() == _KING_ ) && ( pKing->getIsMoved() == false ) &&
+            ( abs( pushIndex.x - m_IndexCellSelection.x ) == 2 ) &&
+            ( pushIndex.y == m_IndexCellSelection.y ) )
+    {
+        if( pushIndex.x < m_IndexCellSelection.x )
+        {
+            // ----------------------------------------------------------------
+            // Long castling.
+
+            if( m_board[0][pushIndex.y].m_pFigure->getType() != _ROOK_ )
+            {
+                return;
+            }
+
+            // Checking the path for the absence of a check.
+            for( int i = pushIndex.x ; i <= m_IndexCellSelection.x ; i++ )
+            {
+                if( checkCheck( IntPoint( i, pushIndex.y ) ) ) { return; }
+            }
+
+            // Checking the path for the absence of obstacles.
+            for( int i = 1 ; i < m_IndexCellSelection.x ; i++ )
+            {
+                if( m_board[i][pushIndex.y].m_pFigure != nullptr ) { return; }
+            }
+
+            // ----------------------------------------------------------------
+            // Carry out castling.
+            moveFigure( pushIndex );
+            deselectFigure();
+            changeActualMove();
+            selectFigure( IntPoint( 0, pushIndex.y ) );
+            moveFigure( pushIndex.plusPoint( 1, 0 ) );
+        }
+        else
+        {
+            // ----------------------------------------------------------------
+            // Short castling.
+
+            if( m_board[_BOARD_SIZE_-1][pushIndex.y].m_pFigure->getType() !=
+                    _ROOK_ )
+            {
+                return;
+            }
+
+            // Checking the path for the absence of a check.
+            for( int i = m_IndexCellSelection.x ; i <= pushIndex.x ; i++ )
+            {
+                if( checkCheck( IntPoint( i, pushIndex.y ) ) ) { return; }
+            }
+
+            // Checking the path for the absence of obstacles.
+            for( int i = m_IndexCellSelection.x + 1 ; i < _BOARD_SIZE_ - 1 ; i++ )
+            {
+                if( m_board[i][pushIndex.y].m_pFigure != nullptr ) { return; }
+            }
+
+            // ----------------------------------------------------------------
+            // Carry out castling.
+            moveFigure( pushIndex );
+            deselectFigure();
+            changeActualMove();
+            selectFigure( IntPoint( _BOARD_SIZE_ - 1, pushIndex.y ) );
+            moveFigure( pushIndex.plusPoint( -1, 0 ) );
+        }
+    }
+}
+
+
+
+// ----------------------------------------------------------------------------
+bool ChessBoard::checkCheck( IntPoint checkIndex )
+{
+    if( !isOnBoardIndex( checkIndex ) ) { return false; }
+
+    for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
+    {
+        for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
+        {
+            if( m_board[i][j].m_pFigure == nullptr ) { continue; }
+            if( m_board[i][j].m_pFigure->getColor() != m_isBlackMove )
+            {
+                if( checkMoveFigure( IntPoint( i, j ), checkIndex ) )
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+
+// ----------------------------------------------------------------------------
+bool ChessBoard::checkCheckKing()
+{
+    return checkCheck( findKing() );
+}
+
+
+
+// ----------------------------------------------------------------------------
+IntPoint ChessBoard::findKing()
+{
+    for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
+    {
+        for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
+        {
+            if( m_board[i][j].m_pFigure == nullptr ) { continue; }
+            if( ( m_board[i][j].m_pFigure->getColor() == m_isBlackMove ) &&
+                ( m_board[i][j].m_pFigure->getType() == _KING_ ) )
+            {
+                return IntPoint( i, j );
+            }
+        }
+    }
+    return IntPoint( -1, -1 );
 }
 
 
