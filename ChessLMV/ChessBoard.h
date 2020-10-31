@@ -2,11 +2,12 @@
 
 #include <SDL.h>
 #include <math.h>
-//#include <map>
+#include <map>
 
 #include "GameObjectInsertion.h"
 #include "GameWindow.h"
 #include "HelpFunctions.hpp"
+#include "TextMenu.h"
 #include "CellBoard.h"
 #include "TextBox.h"
 #include "Figure.h"
@@ -28,7 +29,7 @@ enum defineGameOverType : int
 class ChessBoard : public GameObjectInsertion
 {
     public:
-        ChessBoard( GameWindow *pGameWindow );
+        ChessBoard( GameWindow *pGameWindow, TextMenu *pTextMenu );
         ~ChessBoard();
 
 
@@ -90,7 +91,10 @@ class ChessBoard : public GameObjectInsertion
         bool pawnPromotion( IntPoint pushIndex );
 
         // "Taking on the pass". Attacking the opponent's pawn with his pawn
-        // after it has moved 2 cells.
+        // after it has moved 2 cells. After the fact, I learned that in
+        // English this term is called "En passant" (from wiki). But I decided
+        // not to fix it anymore, since there is no time to check with my eyes,
+        // and a massive replacement can cause trouble.
         bool pawnTakingPass( IntPoint pushIndex );
 
         // Check the castling and do it if it can.
@@ -114,6 +118,16 @@ class ChessBoard : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
+        // Makes a snapshot of the situation on the board and checks if there
+        // was a repeat. According to the rules of chess - on the 3rd
+        // repetition, the game ends in a draw.
+        void repeatSituation();
+
+
+        // --------------------------------------------------------------------
+        // --------------------------------------------------------------------
+        TextMenu *m_pTextMenu;
+
         CellBoard m_board[_BOARD_SIZE_][_BOARD_SIZE_];
         int m_iStepX, m_iStepY; // The step (size) of the squares of the board.
 
@@ -171,9 +185,17 @@ class ChessBoard : public GameObjectInsertion
         // --------------------------------------------------------------------
         TextBox *m_pTextGameOver;
 
+
+        // --------------------------------------------------------------------
+        // Storage of casts of the position of figures on the board.
+        // Counts repetitions of situations.
+        std::map <std::string, int> m_mapRepeatSituation;
+
+
         // --------------------------------------------------------------------
         // 
-        //std::map <std::string, int> m_mapRepeatPosition;
+        int m_iNWithoutPawnMove;
+
 
     // ------------------------------------------------------------------------
     private:

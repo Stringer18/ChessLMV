@@ -47,14 +47,20 @@ bool prepareElements( GameWindow *pGameWindow, Background **ppBackground,
         return false;
     }
 
-    *ppChessBoard = new ChessBoard( pGameWindow );
+    *ppTextMenu = new TextMenu( pGameWindow );
+    if( !( pGameWindow->m_fIsSuccess ) )
+    {
+        setToLog( "Cannot create menu." );
+        return false;
+    }
+
+    *ppChessBoard = new ChessBoard( pGameWindow, *ppTextMenu );
     if( !( pGameWindow->m_fIsSuccess ) )
     {
         setToLog( "Cannot create chess board." );
         return false;
     }
 
-    *ppTextMenu = new TextMenu( pGameWindow );
     return true;
 }
 

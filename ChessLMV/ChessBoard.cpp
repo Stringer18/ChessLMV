@@ -1,7 +1,7 @@
 #include "ChessBoard.h"
 
 // ----------------------------------------------------------------------------
-ChessBoard::ChessBoard( GameWindow *pGameWindow ) :
+ChessBoard::ChessBoard( GameWindow *pGameWindow, TextMenu *pTextMenu ) :
         GameObjectInsertion( pGameWindow )
 {
     m_gameWindow->m_fIsSuccess = prepareBoard();
@@ -26,6 +26,8 @@ ChessBoard::ChessBoard( GameWindow *pGameWindow ) :
     m_lastMoveTo = IntPoint( -1, -1 );
     m_fIsPauseBoard = false;
     m_pTextGameOver = nullptr;
+    m_pTextMenu = pTextMenu;
+    m_iNWithoutPawnMove = 0;
 }
 
 
@@ -142,6 +144,16 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
             {
                 toHelp( "You cannot do this move." );
             }
+            else
+            {
+                repeatSituation();
+                if( m_iNWithoutPawnMove >= 100 )
+                {
+                    toHelp( std::string( "For 50 moves, there was no " ) +
+                            "movement of pawns or attack to it." );
+                    gameOver( _GO_DRAW_ );
+                }
+            }
         }
         if( !m_fIsPawnPromotionActive ) { deselectFigure(); }
         return;
@@ -173,6 +185,8 @@ void ChessBoard::toHelp( std::string strHelp )
 // ----------------------------------------------------------------------------
 void ChessBoard::gameOver( int iType )
 {
+    if( m_pTextGameOver != nullptr ) { delete m_pTextGameOver; }
+
     int iFontSize = 0;
     getDataFromIni( &iFontSize, "textGameOver", "iFontSize", 30 );
 
@@ -215,8 +229,9 @@ void ChessBoard::gameOver( int iType )
 
     iTweakingX = ( iTweakingX - m_pTextGameOver->getSize().x ) / 2;
     int iTweakingY = ( m_sdlRect->x - m_pTextGameOver->getSize().y ) / 2;
-
     m_pTextGameOver->setPosition( iTweakingX, iTweakingY );
+
+    m_pTextMenu->NewGameOrExitMode();
 
     m_gameWindow->refresh();
 }
@@ -344,6 +359,17 @@ void ChessBoard::moveFigure( IntPoint pushIndex )
             nullptr;
     m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->setPosition(
             m_board[m_lastMoveTo.x][m_lastMoveTo.y].getPosition() );
+
+    if( m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->getType() ==
+            _PAWN_ )
+    {
+        m_iNWithoutPawnMove = 0;
+    }
+    else
+    {
+        m_iNWithoutPawnMove++;
+    }
+
     changeActualMove();
 }
 
@@ -368,6 +394,20 @@ void ChessBoard::atackFigure( IntPoint atackIndex )
     // m_pFigure == nullptr if we use a special rule - "taking on the pass".
     if( m_board[atackIndex.x][atackIndex.y].m_pFigure != nullptr )
     {
+        // Next, the motion function will be called,
+        // which corrects this "-1" to "0".
+        m_iNWithoutPawnMove = -1;
+        if( m_board[atackIndex.x][atackIndex.y].m_pFigure->getType() == _KING_)
+        {
+            // In theory, we should never get inside this case. But just in
+            // case I play it safe, and if the program does not notice a
+            // check or checkmate, then the player will be able to attack
+            // the king and thereby win.
+            toHelp( std::string( m_board[atackIndex.x][atackIndex.y].
+                    m_pFigure->getColor() ? "The black" : "The white" ) +
+                    " king was killed." );
+            gameOver( _GO_WIN_ );
+        }
         delete m_board[atackIndex.x][atackIndex.y].m_pFigure;
     }
     moveFigure( atackIndex );
@@ -425,6 +465,7 @@ bool ChessBoard::pawnPromotion( IntPoint pushIndex )
             m_pTextChangePawn->changeVisible();
             deselectFigure();
             changeActualMove();
+            m_iNWithoutPawnMove = 0;
             toHelp( " " );
             return true;
         }
@@ -493,6 +534,7 @@ bool ChessBoard::pawnTakingPass( IntPoint pushIndex )
         moveFigure( pushIndex );
         m_lastMoveFrom = startAtack;
         changeActualMove();
+        m_iNWithoutPawnMove = 0;
         return true;
     }
     return false;
@@ -645,6 +687,54 @@ IntPoint ChessBoard::findKing()
         }
     }
     return IntPoint( -1, -1 );
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::repeatSituation()
+{
+    char szBlankMask[ _BOARD_SIZE_ * _BOARD_SIZE_ * 2 + 1];
+    char *pchEnd = szBlankMask;
+    for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
+    {
+        for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
+        {
+            if( m_board[i][j].m_pFigure == nullptr )
+            {
+                *pchEnd = '0';
+                pchEnd++;
+                *pchEnd = '0';
+                pchEnd++;
+            }
+            else
+            {
+                *pchEnd = (char) ( m_board[i][j].m_pFigure->getColor() + 48 );
+                pchEnd++;
+                *pchEnd = (char) ( m_board[i][j].m_pFigure->getType() + 48 );
+                pchEnd++;
+            }
+        }
+    }
+    *pchEnd = '\0';
+    
+    std::string strMask = szBlankMask;
+
+    std::map <std::string, int>::iterator it = m_mapRepeatSituation.find(
+            strMask );
+    if( it != m_mapRepeatSituation.end() )
+    {
+        it->second += 1;
+        if( it->second == 3 ) 
+        {
+            toHelp( "The situation on the board was repeated 3 times." );
+            gameOver( _GO_DRAW_ );
+        }
+    }
+    else
+    {
+        m_mapRepeatSituation[strMask] = 1;
+    }
 }
 
 
