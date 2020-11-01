@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Console.h"
 #include "HelpFunctions.hpp"
 #include "GameWindow.h"
 #include "GameObject.h"

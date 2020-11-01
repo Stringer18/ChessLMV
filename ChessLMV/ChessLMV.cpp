@@ -5,6 +5,10 @@
 // ----------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
+    int iHideConsole = 0;
+    getDataFromIni( &iHideConsole, "gameWindow", "iHideConsole", 0 );
+    if( iHideConsole == 1 ) { HideConsole(); }
+
     setToLog( "Start program." );
     
     GameWindow gameWindow;
