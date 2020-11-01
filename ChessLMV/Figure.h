@@ -31,6 +31,7 @@ class Figure : public GameObjectInsertion
         void setPosition( const IntPoint position );
         void setPosition( int iX, int iY );
 
+
         // --------------------------------------------------------------------
         // Return:  Black -> true    White -> false
         bool getColor();
@@ -43,7 +44,6 @@ class Figure : public GameObjectInsertion
         // the trajectory of moving.
         IntPoint checkTrajectory( IntPoint selectedIndex, IntPoint pushIndex,
                 Figure *pushFigure );
-
 
 
     // ------------------------------------------------------------------------

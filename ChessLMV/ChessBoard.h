@@ -47,7 +47,8 @@ class ChessBoard : public GameObjectInsertion
 
         // --------------------------------------------------------------------
         // Displays text in the help area (m_pTextHelp).
-        void toHelp( std::string strHelp );
+        void toHelp( std::string strHelp = " " );
+        void toHelpAdd( std::string strMessage );
 
 
         // --------------------------------------------------------------------
@@ -125,6 +126,19 @@ class ChessBoard : public GameObjectInsertion
 
 
         // --------------------------------------------------------------------
+        // Clears memorized situations. When a pawn has been moved or a figure
+        // is attacked (irreversible actions), there is no point in keeping any
+        // previous position of the pieces - they cannot repeat it.
+        void repeatSituationReset();
+
+
+        // --------------------------------------------------------------------
+        // Checks the rule that if the king is not in check, but there is
+        // no available move, a draw is declared.
+        //void checkNowhereToGo();
+
+
+        // --------------------------------------------------------------------
         // --------------------------------------------------------------------
         TextMenu *m_pTextMenu;
 
@@ -190,12 +204,27 @@ class ChessBoard : public GameObjectInsertion
         // Storage of casts of the position of figures on the board.
         // Counts repetitions of situations.
         std::map <std::string, int> m_mapRepeatSituation;
+        std::string strMapMask;
 
 
         // --------------------------------------------------------------------
-        // 
-        int m_iNWithoutPawnMove;
+        int m_iNMovesToDram;
 
+
+        // --------------------------------------------------------------------
+        int m_iNMovesToDramBackup;
+        Figure *m_pFigureBackup;
+        bool m_fIsRejecting;
+
+
+        // --------------------------------------------------------------------
+        std::string strHelpMessage;
+
+
+        // --------------------------------------------------------------------
+        int m_iRuleMaxMovesToDram;
+        int m_iRuleMaxRepeats;
+        
 
     // ------------------------------------------------------------------------
     private:

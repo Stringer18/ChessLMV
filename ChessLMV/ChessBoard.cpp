@@ -1,5 +1,6 @@
 #include "ChessBoard.h"
 
+
 // ----------------------------------------------------------------------------
 ChessBoard::ChessBoard( GameWindow *pGameWindow, TextMenu *pTextMenu ) :
         GameObjectInsertion( pGameWindow )
@@ -27,7 +28,16 @@ ChessBoard::ChessBoard( GameWindow *pGameWindow, TextMenu *pTextMenu ) :
     m_fIsPauseBoard = false;
     m_pTextGameOver = nullptr;
     m_pTextMenu = pTextMenu;
-    m_iNWithoutPawnMove = 0;
+    m_iNMovesToDram = 0;
+    strMapMask = "";
+    m_iNMovesToDramBackup = 0;
+    m_pFigureBackup = nullptr;
+    m_fIsRejecting = false;
+
+    m_iRuleMaxMovesToDram = 0;
+    m_iRuleMaxRepeats = 0;
+    getDataFromIni( &m_iRuleMaxMovesToDram, "rules", "iMaxMovesToDram", 100 );
+    getDataFromIni( &m_iRuleMaxRepeats, "rules", "iMaxRepeats", 3 );
 }
 
 
@@ -79,7 +89,7 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
 {
     if( m_fIsPauseBoard ) { return; }
 
-    toHelp( " " );
+    toHelp();
     IntPoint pushIndex = pushPointToCellPoint( pushPoint );
 
     if( m_fIsPawnPromotionActive )
@@ -118,6 +128,18 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
         if( isOnBoardIndex( pushIndex ) &&
                 ( pushIndex != m_IndexCellSelection ) )
         {
+            if( m_board[pushIndex.x][pushIndex.y].m_pFigure != nullptr )
+            {
+                if( m_board[pushIndex.x][pushIndex.y].m_pFigure->getColor() ==
+                        m_board[m_IndexCellSelection.x][
+                        m_IndexCellSelection.y].m_pFigure->getColor() )
+                {
+                    toHelp( "It's your own figure." );
+                    deselectFigure();
+                    return;
+                }
+            }
+
             // ----------------------------------------------------------------
             // This is where the standard movements are checked (and executed).
             bool fIsCheckMoveFigure = checkMoveFigure( m_IndexCellSelection,
@@ -139,20 +161,27 @@ void ChessBoard::pushAnalysis( IntPoint pushPoint )
             bool fIsPawnPromotion = pawnPromotion( pushIndex );
             bool fIsPawnTakingPass = pawnTakingPass( pushIndex );
             bool fIsKingCastling = kingCastling( pushIndex );
-            if( !( fIsCheckMoveFigure || fIsPawnPromotion || 
+            if( !m_fIsRejecting && ( fIsCheckMoveFigure || fIsPawnPromotion || 
                     fIsPawnTakingPass || fIsKingCastling ) )
             {
-                toHelp( "You cannot do this move." );
+                repeatSituation();
+                if( m_iNMovesToDram >= m_iRuleMaxMovesToDram )
+                {
+                    toHelp( std::string( "For " ) +
+                            toString( m_iRuleMaxMovesToDram / 2 ) + " moves," +
+                            "there was no movement of pawns or attack to it.");
+                    gameOver( _GO_DRAW_ );
+                }
+                changeActualMove();
+                // Cheking for next player!
+                if( checkCheckKing() )
+                {
+                    toHelp( "King in check." );
+                }
             }
             else
             {
-                repeatSituation();
-                if( m_iNWithoutPawnMove >= 100 )
-                {
-                    toHelp( std::string( "For 50 moves, there was no " ) +
-                            "movement of pawns or attack to it." );
-                    gameOver( _GO_DRAW_ );
-                }
+                toHelpAdd( " You cannot do this move." );
             }
         }
         if( !m_fIsPawnPromotionActive ) { deselectFigure(); }
@@ -172,12 +201,28 @@ bool ChessBoard::isOnBoardIndex( IntPoint checkIndex )
 
 
 // ----------------------------------------------------------------------------
-void ChessBoard::toHelp( std::string strHelp )
+void ChessBoard::toHelp( std::string strMessage /*= " "*/ )
 {
-    if( m_pTextHelp != nullptr ) { delete m_pTextHelp; }
-    m_pTextHelp = new TextBox( m_gameWindow, strHelp, m_helpPosition,
-            m_iHelpMaxWidth, true, m_iHelpFontSize );
+    strHelpMessage = strMessage;
+    if( strHelpMessage.length() == 0 ) { strHelpMessage = " "; }
 
+    if( m_pTextHelp != nullptr ) { delete m_pTextHelp; }
+    m_pTextHelp = new TextBox( m_gameWindow, strHelpMessage, m_helpPosition,
+            m_iHelpMaxWidth, true, m_iHelpFontSize );
+}
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::toHelpAdd( std::string strMessage )
+{
+    if( strHelpMessage.compare( " " ) == 0 ) { strHelpMessage = strMessage; }
+    else { strHelpMessage += strMessage; }
+    if( strHelpMessage.length() == 0 ) { strHelpMessage = " "; }
+
+    if( m_pTextHelp != nullptr ) { delete m_pTextHelp; }
+    m_pTextHelp = new TextBox( m_gameWindow, strHelpMessage, m_helpPosition,
+            m_iHelpMaxWidth, true, m_iHelpFontSize );
 }
 
 
@@ -249,7 +294,7 @@ void ChessBoard::boardPause()
     }
     else
     {
-        toHelp( " " );
+        toHelp();
     }
     
 }
@@ -350,27 +395,66 @@ void ChessBoard::moveFigure( IntPoint pushIndex )
         m_gameWindow->m_fIsSuccess = false;
         return;
     }
-    m_lastMoveFrom = m_IndexCellSelection;
-    m_lastMoveTo = pushIndex;
-    m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure =
-            m_board[m_lastMoveFrom.x][m_lastMoveFrom.y].
-            m_pFigure;
-    m_board[m_lastMoveFrom.x][m_lastMoveFrom.y].m_pFigure =
-            nullptr;
-    m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->setPosition(
-            m_board[m_lastMoveTo.x][m_lastMoveTo.y].getPosition() );
 
-    if( m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->getType() ==
-            _PAWN_ )
+
+    // ------------------------------------------------------------------------
+    // Moving.
+    m_board[pushIndex.x][pushIndex.y].m_pFigure =
+            m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].
+            m_pFigure;
+    m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure =
+            nullptr;
+
+    // ------------------------------------------------------------------------
+    if( checkCheckKing() )
     {
-        m_iNWithoutPawnMove = 0;
+        // Rejection.
+        m_fIsRejecting = true;
+        m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure =
+                m_board[pushIndex.x][pushIndex.y].m_pFigure;
+        m_board[pushIndex.x][pushIndex.y].m_pFigure = m_pFigureBackup;
+
+        // If there was an attack.
+        if( m_pFigureBackup != nullptr )
+        {
+            m_pFigureBackup = nullptr;
+            m_iNMovesToDram = m_iNMovesToDramBackup;
+        }
+        toHelp( "King in check." );
     }
     else
     {
-        m_iNWithoutPawnMove++;
-    }
+        // ------------------------------------------------------------------------
+        //Accepting.
+        m_fIsRejecting = false;
+        m_lastMoveFrom = m_IndexCellSelection;
+        m_lastMoveTo = pushIndex;
 
-    changeActualMove();
+        // Part of move
+        m_board[pushIndex.x][pushIndex.y].m_pFigure->setPosition(
+                m_board[pushIndex.x][pushIndex.y].getPosition() );  
+
+        // Moved from attack function. Because there
+        // comes the confirmation of the changes.
+        if( m_pFigureBackup != nullptr ) 
+        { 
+            delete m_pFigureBackup;
+            m_pFigureBackup = nullptr;
+            repeatSituationReset();
+        }
+
+
+        if( m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure->getType() ==
+                _PAWN_ )
+        {
+            m_iNMovesToDram = 0;
+            repeatSituationReset();
+        }
+        else
+        {
+            m_iNMovesToDram++;
+        }
+    }
 }
 
 
@@ -396,7 +480,8 @@ void ChessBoard::atackFigure( IntPoint atackIndex )
     {
         // Next, the motion function will be called,
         // which corrects this "-1" to "0".
-        m_iNWithoutPawnMove = -1;
+        m_iNMovesToDramBackup = m_iNMovesToDram;
+        m_iNMovesToDram = -1;
         if( m_board[atackIndex.x][atackIndex.y].m_pFigure->getType() == _KING_)
         {
             // In theory, we should never get inside this case. But just in
@@ -408,7 +493,13 @@ void ChessBoard::atackFigure( IntPoint atackIndex )
                     " king was killed." );
             gameOver( _GO_WIN_ );
         }
-        delete m_board[atackIndex.x][atackIndex.y].m_pFigure;
+
+        // Here we are only planning an attack. Its confirmation or rejection
+        // will be done in the movement function - there is a check to see if
+        // our king will open under attack (illegal action).
+        // delete m_board[atackIndex.x][atackIndex.y].m_pFigure;
+        m_pFigureBackup = m_board[atackIndex.x][atackIndex.y].m_pFigure;
+        m_board[atackIndex.x][atackIndex.y].m_pFigure = nullptr;
     }
     moveFigure( atackIndex );
 }
@@ -465,8 +556,8 @@ bool ChessBoard::pawnPromotion( IntPoint pushIndex )
             m_pTextChangePawn->changeVisible();
             deselectFigure();
             changeActualMove();
-            m_iNWithoutPawnMove = 0;
-            toHelp( " " );
+            m_iNMovesToDram = 0;
+            toHelp();
             return true;
         }
     }
@@ -528,14 +619,24 @@ bool ChessBoard::pawnTakingPass( IntPoint pushIndex )
             ( abs ( m_lastMoveFrom.y - m_lastMoveTo.y ) == 2 ) &&
             ( pushIndex.y == ( ( m_lastMoveFrom.y + m_lastMoveTo.y ) / 2 ) ) )
     {
-        IntPoint startAtack = m_IndexCellSelection;
-        atackFigure( m_lastMoveTo );
-        selectFigure( m_lastMoveTo );
+        m_iNMovesToDramBackup = m_iNMovesToDram;
+        Figure *pFigureBackup = m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure;
+        m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure = nullptr;
         moveFigure( pushIndex );
-        m_lastMoveFrom = startAtack;
-        changeActualMove();
-        m_iNWithoutPawnMove = 0;
-        return true;
+
+        if( m_fIsRejecting )
+        {
+            m_board[m_lastMoveTo.x][m_lastMoveTo.y].m_pFigure = pFigureBackup;
+            pFigureBackup = nullptr;
+            m_iNMovesToDram = m_iNMovesToDramBackup;
+        }
+        else
+        {
+            delete pFigureBackup;
+            pFigureBackup = nullptr;
+            m_iNMovesToDram = 0;
+            return true;
+        }
     }
     return false;
 }
@@ -555,17 +656,27 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             m_board[m_IndexCellSelection.x][m_IndexCellSelection.y].m_pFigure;
     if( pKing == nullptr ) { return false; }
 
-    if( ( pKing->getType() == _KING_ ) && ( pKing->getIsMoved() == false ) &&
+    if( ( pKing->getType() == _KING_ ) && 
             ( abs( pushIndex.x - m_IndexCellSelection.x ) == 2 ) &&
             ( pushIndex.y == m_IndexCellSelection.y ) )
     {
+        if( pKing->getIsMoved() )
+        {
+            toHelp( "The king moved before." );
+            return false;
+        }
         if( pushIndex.x < m_IndexCellSelection.x )
         {
             // ----------------------------------------------------------------
             // Long castling.
-
+            if( m_board[0][pushIndex.y].m_pFigure == nullptr )
+            {
+                toHelp( "You haven't rook for this move in the right place." );
+                return false;
+            }
             if( m_board[0][pushIndex.y].m_pFigure->getType() != _ROOK_ )
             {
+                toHelp( "You haven't rook for this move in the right place." );
                 return false;
             }
 
@@ -574,6 +685,7 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             {
                 if( checkCheck( IntPoint( i, pushIndex.y ) ) )
                 {
+                    toHelp( "King or path in check." );
                     return false;
                 }
             }
@@ -583,6 +695,7 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             {
                 if( m_board[i][pushIndex.y].m_pFigure != nullptr )
                 {
+                    toHelp( "Other figures are blocking the path." );
                     return false;
                 }
             }
@@ -591,18 +704,23 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             // Carry out castling.
             moveFigure( pushIndex );
             deselectFigure();
-            changeActualMove();
             selectFigure( IntPoint( 0, pushIndex.y ) );
             moveFigure( pushIndex.plusPoint( 1, 0 ) );
+            return true;
         }
         else
         {
             // ----------------------------------------------------------------
             // Short castling.
-
+            if( m_board[_BOARD_SIZE_-1][pushIndex.y].m_pFigure == nullptr )
+            {
+                toHelp( "You haven't rook for this move in the right place." );
+                return false;
+            }
             if( m_board[_BOARD_SIZE_-1][pushIndex.y].m_pFigure->getType() !=
                     _ROOK_ )
             {
+                toHelp( "You haven't rook for this move in the right place." );
                 return false;
             }
 
@@ -611,6 +729,7 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             {
                 if( checkCheck( IntPoint( i, pushIndex.y ) ) ) 
                 {
+                    toHelp( "King or path in check." );
                     return false;
                 }
             }
@@ -620,6 +739,7 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             {
                 if( m_board[i][pushIndex.y].m_pFigure != nullptr ) 
                 {
+                    toHelp( "Other figures are blocking the path." );
                     return false;
                 }
             }
@@ -628,7 +748,6 @@ bool ChessBoard::kingCastling( IntPoint pushIndex )
             // Carry out castling.
             moveFigure( pushIndex );
             deselectFigure();
-            changeActualMove();
             selectFigure( IntPoint( _BOARD_SIZE_ - 1, pushIndex.y ) );
             moveFigure( pushIndex.plusPoint( -1, 0 ) );
             return true;
@@ -702,9 +821,9 @@ void ChessBoard::repeatSituation()
         {
             if( m_board[i][j].m_pFigure == nullptr )
             {
-                *pchEnd = '0';
+                *pchEnd = '9';
                 pchEnd++;
-                *pchEnd = '0';
+                *pchEnd = '9';
                 pchEnd++;
             }
             else
@@ -718,24 +837,60 @@ void ChessBoard::repeatSituation()
     }
     *pchEnd = '\0';
     
-    std::string strMask = szBlankMask;
+    strMapMask = szBlankMask;
 
     std::map <std::string, int>::iterator it = m_mapRepeatSituation.find(
-            strMask );
+            strMapMask );
     if( it != m_mapRepeatSituation.end() )
     {
         it->second += 1;
-        if( it->second == 3 ) 
+        if( it->second >= m_iRuleMaxRepeats ) 
         {
-            toHelp( "The situation on the board was repeated 3 times." );
+            toHelp( std::string( "The situation on the board was repeated " ) +
+                toString( m_iRuleMaxRepeats ) +" times." );
             gameOver( _GO_DRAW_ );
         }
     }
     else
     {
-        m_mapRepeatSituation[strMask] = 1;
+        m_mapRepeatSituation[strMapMask] = 1;
     }
 }
+
+
+
+// ----------------------------------------------------------------------------
+void ChessBoard::repeatSituationReset()
+{
+    m_mapRepeatSituation.clear();
+}
+
+
+
+// ----------------------------------------------------------------------------
+//void ChessBoard::checkNowhereToGo()
+//{
+//    //if( checkCheckKing() )
+//    //{
+//    //    toHelp( "King in check." );
+//    //    return;
+//    //}
+//
+//    for( int j = 0 ; j < _BOARD_SIZE_ ; j++ )
+//    {
+//        for( int i = 0 ; i < _BOARD_SIZE_ ; i++ )
+//        {
+//            // Find figures only in our color.
+//            if( m_board[i][j].m_pFigure == nullptr ) { continue; }
+//            if( m_board[i][j].m_pFigure->getColor() != m_isBlackMove )
+//            {
+//                continue;
+//            }
+//            
+//            // 
+//        }
+//    }
+//}
 
 
 
@@ -982,6 +1137,7 @@ bool ChessBoard::preparePawnPromotion()
 void ChessBoard::prepareHelp()
 {
     m_pTextHelp = nullptr;
+    strHelpMessage = "";
     m_helpPosition = 0;
     m_iHelpMaxWidth = 0;
     m_iHelpFontSize = 0;

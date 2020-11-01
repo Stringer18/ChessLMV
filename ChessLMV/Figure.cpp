@@ -43,18 +43,17 @@ Figure::~Figure()
 // ----------------------------------------------------------------------------
 void Figure::setPosition( const IntPoint position )
 {
+    m_fIsMoved = true;
     m_sdlRect->x = position.x;
     m_sdlRect->y = position.y;
-    m_fIsMoved = true;
 }
 
 void Figure::setPosition( int iX, int iY )
 {
+    m_fIsMoved = true;
     m_sdlRect->x = iX;
     m_sdlRect->y = iY;
-    m_fIsMoved = true;
 }
-
 
 
 
