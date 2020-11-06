@@ -10,7 +10,7 @@
 class Background : public GameObjectInsertion
 {
     public:
-        Background( GameWindow *inputGameWindow );
+        explicit Background( GameWindow *inputGameWindow );
         ~Background();
 };
 

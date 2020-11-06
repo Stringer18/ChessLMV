@@ -12,6 +12,8 @@ class GameObject
                 int iPositionY = 0, int iWidth = 0, int iHeight = 0 );
         ~GameObject();
 
+
+        // --------------------------------------------------------------------
         IntPoint getSize() const;
         IntPoint getPosition() const;
         SDL_Rect* getRect() const;
@@ -24,9 +26,20 @@ class GameObject
         // An instance is valid if it's texture is not nullptr.
         bool isValid();
 
+
     // ------------------------------------------------------------------------
     protected:
         SDL_Texture* m_sdlTexture;
         SDL_Rect* m_sdlRect;
+
+
+    // ------------------------------------------------------------------------
+    private:
+        // Copy and assignment prohibited.
+        // We cannot do it because we don't have the ability to create
+        // a separate texture.
+        GameObject( const GameObject &gameObject );
+        void operator=( const GameObject &gameObject );
+
 };
 // ----------------------------------------------------------------------------

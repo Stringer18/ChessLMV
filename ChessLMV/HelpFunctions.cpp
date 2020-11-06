@@ -98,19 +98,18 @@ void nowTimeInStr( std::string &strNowTime )
 
 
 // ----------------------------------------------------------------------------
-void setToLog( std::string strMessage )
+void setToLog( const std::string &strMessage )
 {
     std::string strLogMessage("");
     nowTimeInStr( strLogMessage );
-    strLogMessage.append( " --- " ).append( strMessage ).append( "\n" );
+    strLogMessage += " --- " + strMessage + "\n";
 
     printf( "%s", strLogMessage.c_str() );
 
     FILE *logFile;
     if ( fopen_s( &logFile, _LOGFILE_LOG_, "a" ) != 0 )
     {
-        printf( "Cannot open %s\n", _LOGFILE_LOG_ );
-        printf( "Message didn't add to log.\n", strLogMessage.c_str() );
+        printf( "Cannot open %s\nMessage didn't add to log.\n", _LOGFILE_LOG_);
         return;
     }
     fprintf( logFile, "%s", strLogMessage.c_str() );

@@ -56,7 +56,7 @@ void nowTimeInStr( std::string &strNowTime );
 // ----------------------------------------------------------------------------
 // The function receives a message, adds the current time and date to it and
 // writes it to the log and console.
-void setToLog( std::string strMessage );
+void setToLog( const std::string &strMessage );
 
 
 

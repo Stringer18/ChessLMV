@@ -201,7 +201,7 @@ bool ChessBoard::isOnBoardIndex( IntPoint checkIndex )
 
 
 // ----------------------------------------------------------------------------
-void ChessBoard::toHelp( std::string strMessage /*= " "*/ )
+void ChessBoard::toHelp( const std::string &strMessage /*= " "*/ )
 {
     strHelpMessage = strMessage;
     if( strHelpMessage.length() == 0 ) { strHelpMessage = " "; }
@@ -214,7 +214,7 @@ void ChessBoard::toHelp( std::string strMessage /*= " "*/ )
 
 
 // ----------------------------------------------------------------------------
-void ChessBoard::toHelpAdd( std::string strMessage )
+void ChessBoard::toHelpAdd( const std::string &strMessage )
 {
     if( strHelpMessage.compare( " " ) == 0 ) { strHelpMessage = strMessage; }
     else { strHelpMessage += strMessage; }

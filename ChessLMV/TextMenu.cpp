@@ -110,7 +110,7 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
             m_iCommandStore = _NO_COMMAND_;
             if( m_fIsNewGameOrExitMode ) { NewGameOrExitMode(); }
             else { returnMenu(); }
-            return _NO_COMMAND_;
+            return _WAIT_COMMAND_;
         }
     }
     else
@@ -118,22 +118,22 @@ int TextMenu::pushAnalysis( IntPoint pushPoint )
         if( checkPushButton( pTextNewGame, pushPoint ) )
         {
             confirmation( _NEW_GAME_ );
-            return _NO_COMMAND_;
+            return _WAIT_COMMAND_;
         }
         if( checkPushButton( pTextDraw, pushPoint ) )
         {
             confirmation( _DRAW_ );
-            return _NO_COMMAND_;
+            return _WAIT_COMMAND_;
         }
         if( checkPushButton( pTextCapitulation, pushPoint ) )
         {
             confirmation( _CAPITULATION_ );
-            return _NO_COMMAND_;
+            return _WAIT_COMMAND_;
         }
         if( checkPushButton( pTextExit, pushPoint ) )
         {
             confirmation( _EXIT_ );
-            return _NO_COMMAND_;
+            return _WAIT_COMMAND_;
         }
     }
     return _NO_COMMAND_;

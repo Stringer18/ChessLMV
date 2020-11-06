@@ -8,6 +8,7 @@
 enum defineCommandTextMenu : int
 {
     _NO_COMMAND_ = 0,
+    _WAIT_COMMAND_,
     _NEW_GAME_,
     _DRAW_,
     _CAPITULATION_,
@@ -21,7 +22,7 @@ enum defineCommandTextMenu : int
 class TextMenu : public GameObjectInsertion
 {
     public:
-        TextMenu( GameWindow *pGameWindow );
+        explicit TextMenu( GameWindow *pGameWindow );
         ~TextMenu();
 
 

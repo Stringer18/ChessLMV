@@ -18,7 +18,13 @@ GameObject::GameObject( SDL_Texture *inputTexture /*= nullptr*/,
 GameObject::~GameObject()
 {
     if( m_sdlRect != nullptr ) { delete m_sdlRect; }
+
+    // There I suspected a memory leak, but I couldn't check it. I decided to
+    // add a check and texture removal just in case, but it leads to a crash.
+    // So, for now, I put this comment here.
+    //if( m_sdlTexture != nullptr ) { delete m_sdlTexture; }
 }
+
 
 
 // ----------------------------------------------------------------------------

@@ -47,8 +47,8 @@ class ChessBoard : public GameObjectInsertion
 
         // --------------------------------------------------------------------
         // Displays text in the help area (m_pTextHelp).
-        void toHelp( std::string strHelp = " " );
-        void toHelpAdd( std::string strMessage );
+        void toHelp( const std::string &strHelp = " " );
+        void toHelpAdd( const std::string &strMessage );
 
 
         // --------------------------------------------------------------------
@@ -239,6 +239,12 @@ class ChessBoard : public GameObjectInsertion
         bool prepareText();
         bool preparePawnPromotion();
         void prepareHelp();
+
+
+        // --------------------------------------------------------------------
+        // Copy and assignment prohibited.
+        ChessBoard( const ChessBoard &chessBoard );
+        void operator=( const ChessBoard &chessBoard );
 };
 
 

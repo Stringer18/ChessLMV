@@ -1,7 +1,6 @@
 #include "ChessLMV.h"
 
 
-
 // ----------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
@@ -30,7 +29,6 @@ int main(int argc, char *argv[])
         pushPosition( &gameWindow, &pBackground, &pChessBoard, &pTextMenu );
         gameWindow.refresh();
     }
-
     delElements( &pBackground, &pChessBoard, &pTextMenu );
     setToLog( "End program.\n\n" );
     //getchar();
@@ -99,11 +97,11 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
             }
             case SDL_MOUSEBUTTONDOWN:
             {
-                IntPoint pushPosition = IntPoint( sdlEvent.button.x,
+                IntPoint pushPoint = IntPoint( sdlEvent.button.x,
                         sdlEvent.button.y );
 
                 // Check push board.
-                if( checkPushPlace( *ppChessBoard, pushPosition ) )
+                if( checkPushPlace( *ppChessBoard, pushPoint ) )
                 {
                     (*ppChessBoard)->pushAnalysis( IntPoint( sdlEvent.button.x,
                             sdlEvent.button.y ) );
@@ -112,13 +110,13 @@ void pushPosition( GameWindow *pGameWindow, Background **ppBackground,
 
                 // ------------------------------------------------------------
                 // Check push menu.
-                if( checkPushPlace( *ppTextMenu, pushPosition ) )
+                if( checkPushPlace( *ppTextMenu, pushPoint ) )
                 {
                     int iResultAnalysis = (*ppTextMenu)->pushAnalysis(
                             IntPoint( sdlEvent.button.x, sdlEvent.button.y ) );
                     switch( iResultAnalysis )
                     {
-                        case _NO_COMMAND_:
+                        case _WAIT_COMMAND_:
                         {
                             (*ppChessBoard)->boardPause();
                             break;
