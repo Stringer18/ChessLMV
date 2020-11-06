@@ -93,6 +93,7 @@
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="HelpFunctions.hpp" />
     <ClInclude Include="IntPoint.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextMenu.h" />
   </ItemGroup>
@@ -118,6 +119,9 @@
     <None Include="Resources\WhitePawnPromotion.png" />
     <None Include="Resources\WhiteQueen.png" />
     <None Include="Resources\WhiteRook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChessLMV.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

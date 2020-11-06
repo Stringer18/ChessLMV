@@ -1,6 +1,7 @@
 Debug/
 ipch/
-ChessLMV/Release/
+/*/Release/
+/Release/*.pdb
 *.opensdf
 *.sdf
 *.suo

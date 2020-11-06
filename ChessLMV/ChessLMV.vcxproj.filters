@@ -98,6 +98,9 @@
     <ClInclude Include="Console.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LogFile.log">
@@ -163,5 +166,10 @@
     <None Include="Resources\WhitePawnPromotion.png">
       <Filter>Файлы ресурсов\Resources\png</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChessLMV.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
